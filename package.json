@@ -1,0 +1,40 @@
+{
+  "name": "fixin-backend-worker",
+  "version": "1.0.0",
+  "description": "Worker for Fixin platform",
+  "readme": "README.md",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fixin-platform/backend-worker.git"
+  },
+  "author": "Denis Gorbachev <denis.d.gorbachev@gmail.com>",
+  "license": "AGPLv3",
+  "bugs": {
+    "url": "https://github.com/fixin-platform/backend-worker/issues"
+  },
+  "homepage": "https://github.com/fixin-platform/backend-worker",
+  "devDependencies": {
+    "chai": "^3.0.0",
+    "chai-as-promised": "^5.1.0",
+    "chai-things": "^0.2.0",
+    "mocha": "=2.1.0",
+    "nconf": "^0.7.1",
+    "sinon": "^1.15.4",
+    "sinon-chai": "^2.8.0"
+  },
+  "dependencies": {
+    "bluebird": "^2.9.33",
+    "mtr-match": "0.0.4",
+    "pigato": "0.0.40",
+    "readable-stream": "^2.0.1",
+    "underscore": "^1.8.3",
+    "underscore-deep-extend": "0.0.5",
+    "yargs": "^3.15.0"
+  }
+}
