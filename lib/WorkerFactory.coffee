@@ -11,14 +11,14 @@ module.exports =
         Match.check request,
           job: String
           options: Object
-          body: Match.Any
+          body: Object
         input = new stream.Readable({objectMode: true})
         input.on "error", (error) ->
           console.error(error)
           output.error(error.toString())
         input._read = ->
-        input.push(request.body)
-        input.push(null)
+          @push(request.body)
+          @push(null)
         instance = new jobs[request.job] _.extend
           input: input
           output: output

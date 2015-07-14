@@ -34,16 +34,16 @@ describe "WorkerFactory", ->
 
       client.on "error", (msg) -> testDone(new Error(msg))
       client.start()
-#      client.onMsg = _.wrap client.onMsg.bind(client), (parent, args...) ->
-#        for arg in args
-#          console.log arg.toString()
-#        parent(args...)
+      client.onMsg = _.wrap client.onMsg.bind(client), (parent, _msg) ->
+        msg = (frame.toString() for frame in _msg)
+        parent(_msg)
       client.request "EchoService",
         job: "EchoJob"
         options: {}
-        body: "h e l l o"
-      .on "data", (chunk) ->
-        chunk.should.be.equal("h e l l o")
+        body: {message: "h e l l o"}
+      .on "data", (body) ->
+        return unless body # last data frame is false (pigato workaround)
+        body.message.should.be.equal("h e l l o")
       .on "end", testDone
 
   describe "error handling", ->
