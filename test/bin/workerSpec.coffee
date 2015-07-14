@@ -1,9 +1,12 @@
 _ = require "underscore"
+fs = require "fs"
 pigato = require "pigato"
 {spawn} = require "child_process"
 
 spawnWorkerProcess = (args, callback) ->
-  process = spawn("#{__dirname}/../../bin/worker", args)
+  path = "#{__dirname}/../../bin/worker"
+  fs.chmodSync(path, 0o0755) # prop up for Wallaby
+  process = spawn(path, args)
 
   output = ""
   recordOutput = (data) ->
@@ -43,11 +46,16 @@ describe "bin/worker", ->
       broker.on "error", (msg) -> testDone(new Error(msg))
       broker.start()
 
-      spawnWorkerProcess([
+      workerProcess = spawnWorkerProcess([
         "--api EchoApi"
         "--addr #{addr}"
         "#{__dirname}/../ReadEcho"
       ], testDone)
+      workerProcess.on "close", (code) ->
+        try
+          code.should.be.equal(0)
+        catch error
+          testDone(error)
 
       client.on "error", (msg) -> testDone(new Error(msg))
       client.start()
@@ -59,9 +67,11 @@ describe "bin/worker", ->
         options: {}
         body: {message: "h e l l o"}
       .on "data", (body) ->
-        console.log body
         return unless body # last data frame is false (pigato workaround)
         body.message.should.be.equal("h e l l o")
-      .on "end", testDone
+      .on "end", ->
+        console.log "end"
+        workerProcess.kill()
+        testDone()
 
   describe "error handling", ->

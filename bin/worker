@@ -30,6 +30,7 @@ for jobPath in argv._
 worker = WorkerFactory.create(argv.addr, argv.api, {}, jobs)
 
 worker.on "stop", ->
+  console.log "stopped"
   process.exit() # only exit after we have closed the sockets, etc
 
 shutdown = ->

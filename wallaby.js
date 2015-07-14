@@ -20,10 +20,10 @@ module.exports = function(wallaby) {
     //  "!test/mocha.coffee"
     //],
     files: [
+      {pattern: "bin/**/*", instrument: false, load: true, ignore: false},
       "**/*",
       "!*",
       "!.*/**/*",
-      {pattern: "bin/**/*", instrument: false, load: true, ignore: false},
       "!node_modules/**/*",
       "!**/*Spec.coffee"
     ],
