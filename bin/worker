@@ -45,4 +45,4 @@ worker.on "error", (msg) ->
 
 (require "death")(shutdown) # handle SIGINT, SIGQUIT, SIGTERM
 
-worker.start() # may I start working already? ... just a sec, let me install more error handlers
+worker.start("vodka") # give him some vodka after all that error handling
