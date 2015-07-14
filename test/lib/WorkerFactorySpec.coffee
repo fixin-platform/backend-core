@@ -2,7 +2,7 @@ helpers = require "../helpers"
 _ = require "underscore"
 pigato = require "pigato"
 WorkerFactory = require "../../lib/WorkerFactory"
-Echo = require "../Echo"
+ReadEcho = require "../Echo"
 
 describe "WorkerFactory", ->
   addr = "inproc://test"
@@ -28,7 +28,7 @@ describe "WorkerFactory", ->
       broker.on "error", (msg) -> testDone(new Error(msg))
       broker.start()
 
-      worker = WorkerFactory.create(addr, "EchoService", {}, {"EchoJob": Echo})
+      worker = WorkerFactory.create(addr, "EchoApi", {}, {"ReadEcho": ReadEcho})
       worker.on "error", (msg) -> testDone(new Error(msg))
       worker.start()
 
@@ -37,8 +37,8 @@ describe "WorkerFactory", ->
       client.onMsg = _.wrap client.onMsg.bind(client), (parent, _msg) ->
         msg = (frame.toString() for frame in _msg)
         parent(_msg)
-      client.request "EchoService",
-        job: "EchoJob"
+      client.request "EchoApi",
+        job: "ReadEcho"
         options: {}
         body: {message: "h e l l o"}
       .on "data", (body) ->
@@ -55,11 +55,11 @@ describe "WorkerFactory", ->
       client.on "error", (msg) -> testDone(new Error(msg))
       client.start()
 
-      worker = WorkerFactory.create(addr, "EchoService", {}, {}, ->)
+      worker = WorkerFactory.create(addr, "EchoApi", {}, {}, ->)
       worker.on "error", (msg) -> testDone(new Error(msg))
       worker.start()
 
-      client.request("EchoService", "hello")
+      client.request("EchoApi", "hello")
       .on "error", (msg) ->
         msg.should.be.equal("Error: Expected object, got string")
         testDone()

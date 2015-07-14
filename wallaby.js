@@ -7,19 +7,20 @@ var config = _.deepExtend({
   testFramework: "mocha",
   //files: [
   //  "lib/**/*.coffee",
-  //  "test/Echo.coffee",
+  //  "test/ReadEcho.coffee",
   //  "test/mocha.coffee",
   //  "test/config.json"
   //],
   //tests: [
   //  "test/**/*.coffee",
-  //  "!test/Echo.coffee",
+  //  "!test/ReadEcho.coffee",
   //  "!test/mocha.coffee"
   //],
   files: [
     "**/*",
     "!*",
     "!.*/**/*",
+    { pattern: "bin/**/*", instrument: false, load: true, ignore: false },
     "!node_modules/**/*",
     "!**/*Spec.coffee"
   ],

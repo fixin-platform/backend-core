@@ -30,7 +30,9 @@
   },
   "dependencies": {
     "bluebird": "^2.9.33",
+    "death": "^1.0.0",
     "mtr-match": "0.0.4",
+    "path-parse": "^1.0.5",
     "pigato": "0.0.40",
     "readable-stream": "^2.0.1",
     "underscore": "^1.8.3",
