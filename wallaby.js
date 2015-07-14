@@ -28,8 +28,7 @@ module.exports = function(wallaby) {
       "!**/*Spec.coffee"
     ],
     tests: [
-      "test/**/*Spec.coffee",
-      "!test/bin/*Spec.coffee" // Wallaby can't be used to test binaries
+      "test/**/*Spec.coffee"
     ],
     compilers: {
       "lib/**/*.coffee": coffeeCompiler,

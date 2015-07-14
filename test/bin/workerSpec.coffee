@@ -4,22 +4,23 @@ pigato = require "pigato"
 {spawn} = require "child_process"
 
 spawnWorkerProcess = (args, callback) ->
-  path = "#{__dirname}/../../bin/worker"
+  path = "#{process.env.ROOT_DIR}/bin/worker"
   fs.chmodSync(path, 0o0755) # prop up for Wallaby
-  process = spawn(path, args)
+  workerProcess = spawn(path, args)
 
   output = ""
   recordOutput = (data) ->
     output += data
 
-  process.stdout.on 'data', recordOutput
-  process.stderr.on 'data', recordOutput
-  process.on 'error', callback
-  process.on 'close', (code) ->
+  workerProcess.stdout.on 'data', recordOutput
+  workerProcess.stderr.on 'data', recordOutput
+  workerProcess.on 'error', callback
+  workerProcess.on 'close', (code) ->
+    console.log output
     callback null,
       output: output.split('\n').join('\n')
       code: code
-  process
+  workerProcess
 
 describe "bin/worker", ->
   addr = "ipc://test.ipc"
@@ -51,7 +52,7 @@ describe "bin/worker", ->
         "EchoApi"
         "--addr"
         addr
-        "#{__dirname}/../ReadEcho"
+        "#{process.env.ROOT_DIR}/test/ReadEcho"
       ], (error, result) ->
         return testDone(error) if error
         try
