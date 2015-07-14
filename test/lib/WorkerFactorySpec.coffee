@@ -5,7 +5,7 @@ WorkerFactory = require "../../lib/WorkerFactory"
 ReadEcho = require "../ReadEcho"
 
 describe "WorkerFactory", ->
-  addr = "inproc://test"
+  addr = "inproc://WorkerFactory" # must be unique per suite
   broker = null; client = null; worker = null
 
   beforeEach (setupDone) ->

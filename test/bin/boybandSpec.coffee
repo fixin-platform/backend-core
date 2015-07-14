@@ -3,17 +3,15 @@ fs = require "fs"
 pigato = require "pigato"
 helpers = require "../helpers"
 
-describe "bin/worker", ->
-  addr = "ipc://worker.ipc" # must be unique per suite
-  broker = undefined; client = undefined
+describe "Boy band", ->
+  addr = "ipc://boyband.ipc" # must be unique per suite
+  client = undefined
 
   beforeEach (setupDone) ->
-    broker = new pigato.Broker(addr)
     client = new pigato.Client(addr)
     setupDone()
 
   afterEach (teardownDone) ->
-    broker.stop()
     client.stop()
     teardownDone()
 
@@ -22,11 +20,8 @@ describe "bin/worker", ->
     beforeEach (setupDone) ->
       setupDone()
 
-    it "should run `echo` service", (testDone) ->
-      @slow(500)
-
-      broker.on "error", (msg) -> testDone(new Error(msg))
-      broker.start()
+    it "should sing in unison", (testDone) ->
+      @slow(1000)
 
       workerProcess = helpers.spawnWorker([
         "--api"
@@ -49,9 +44,11 @@ describe "bin/worker", ->
       onEnd = ->
         try
           onData.should.have.been.calledTwice
-          workerProcess.once "exit", ->
-            testDone()
-          workerProcess.kill()
+          brokerProcess.once "exit", ->
+            workerProcess.once "exit", ->
+              testDone()
+            workerProcess.kill()
+          brokerProcess.kill()
         catch error
           testDone(error)
 
@@ -66,5 +63,17 @@ describe "bin/worker", ->
         body: {message: "h e l l o"}
       .on "data", onData
       .on "end", onEnd
+
+      # brokerProcess is intentionally started after worker and client to test unordered startup
+      brokerProcess = helpers.spawnBroker([
+          "--addr"
+          addr
+        ], (error, result) ->
+        return testDone(error) if error
+        try
+          result.code.should.be.equal(0) # normal exit code after SIGTERM
+        catch error
+          testDone(error)
+      )
 
   describe "error handling", ->

@@ -46,4 +46,4 @@ worker.on "error", (msg) ->
 
 (require "death")(-> shutdown(0)) # handle SIGINT, SIGQUIT, SIGTERM, return normal exit code (signal probably sent by admin)
 
-worker.start("vodka") # give him some vodka after all that error handlinge
+worker.start("vodka") # hope it helps

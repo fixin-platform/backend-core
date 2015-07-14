@@ -1,0 +1,39 @@
+#!/usr/bin/env coffee
+
+path = require "path"
+parse = require "path-parse"
+yargs = require "yargs"
+domain = require "domain"
+BrokerFactory = require "../lib/BrokerFactory"
+
+argv = yargs
+  .usage('Usage: $0 [options]')
+  .options(
+    "d":
+      alias: "addr"
+      type: "string"
+      demand: true
+      default: "tcp://localhost:55550"
+  )
+  .argv
+
+broker = BrokerFactory.create(argv.addr)
+
+broker.on "stop", ->
+  process.exit(broker.exitCode) # only exit after we have closed the sockets, etc
+
+shutdown = (exitCode) ->
+  broker.exitCode = exitCode
+  broker.stop()
+
+broker.on "error", (msg) ->
+  console.error(msg)
+  switch msg
+    when "ERR_MSG_HEADER" # internal broker errors # actually, they aren't implemented yet #
+      # winter is coming... but don't shutdown just yet
+    else
+      shutdown(1) # something really bad happened, let's shutdown
+
+(require "death")(-> shutdown(0)) # handle SIGINT, SIGQUIT, SIGTERM, return normal exit code (signal probably sent by admin)
+
+broker.start("gin") # http://www.brokersgin.com/
