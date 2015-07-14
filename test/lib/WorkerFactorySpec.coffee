@@ -55,7 +55,7 @@ describe "WorkerFactory", ->
       client.on "error", (msg) -> testDone(new Error(msg))
       client.start()
 
-      worker = WorkerFactory.create(addr, "EchoService", {}, {})
+      worker = WorkerFactory.create(addr, "EchoService", {}, {}, ->)
       worker.on "error", (msg) -> testDone(new Error(msg))
       worker.start()
 

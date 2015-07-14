@@ -4,7 +4,7 @@ stream = require "readable-stream"
 Match = require "mtr-match"
 
 module.exports =
-  create: (addr, api, conf = {}, jobs = {}) ->
+  create: (addr, api, conf = {}, jobs = {}, log = console.error.bind(console)) ->
     worker = new pigato.Worker(addr, api, conf)
     worker.on "request", (request, output, opts) ->
       try
@@ -14,7 +14,7 @@ module.exports =
           body: Object
         input = new stream.Readable({objectMode: true})
         input.on "error", (error) ->
-          console.error(error)
+          log(error)
           output.error(error.toString())
         input._read = ->
           @push(request.body)
@@ -25,7 +25,7 @@ module.exports =
         , request.options
         instance.run()
       catch error
-        console.error(error)
+        log(error)
         output.error(error.toString())
     worker
 
