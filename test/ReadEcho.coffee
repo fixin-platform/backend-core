@@ -1,6 +1,6 @@
 _ = require "underscore"
 
-class Echo
+class ReadEcho
   constructor: (options) ->
     _.extend @, options
   run: ->
@@ -21,4 +21,4 @@ class Echo
 #    @output.end('')
 
 
-module.exports = Echo
+module.exports = ReadEcho

@@ -2,7 +2,7 @@ helpers = require "../helpers"
 _ = require "underscore"
 pigato = require "pigato"
 WorkerFactory = require "../../lib/WorkerFactory"
-ReadEcho = require "../Echo"
+ReadEcho = require "../ReadEcho"
 
 describe "WorkerFactory", ->
   addr = "inproc://test"

@@ -30,10 +30,10 @@ for jobPath in argv._
 worker = WorkerFactory.create(argv.addr, argv.api, {}, jobs)
 
 worker.on "stop", ->
-  console.log "stopped"
-  process.exit() # only exit after we have closed the sockets, etc
+  process.exit(worker.exitCode) # only exit after we have closed the sockets, etc
 
-shutdown = ->
+shutdown = (exitCode) ->
+  worker.exitCode = exitCode
   worker.stop()
 
 worker.on "error", (msg) ->
@@ -42,8 +42,8 @@ worker.on "error", (msg) ->
     when "ERR_MSG_TYPE_INVALID", "ERR_MSG_HEADER" # internal worker errors
       # winter is coming... but don't shutdown just yet
     else
-      shutdown() # something really bad happened, let's shutdown
+      shutdown(1) # something really bad happened, let's shutdown
 
-(require "death")(shutdown) # handle SIGINT, SIGQUIT, SIGTERM
+(require "death")(-> shutdown(0)) # handle SIGINT, SIGQUIT, SIGTERM, return normal exit code (signal probably sent by admin)
 
-worker.start("vodka") # give him some vodka after all that error handling
+worker.start("vodka") # give him some vodka after all that error handlinge

@@ -20,15 +20,16 @@ module.exports = function(wallaby) {
     //  "!test/mocha.coffee"
     //],
     files: [
-      {pattern: "bin/**/*", instrument: false, load: true, ignore: false},
       "**/*",
       "!*",
       "!.*/**/*",
+      "!bin/**/*",
       "!node_modules/**/*",
       "!**/*Spec.coffee"
     ],
     tests: [
-      "test/**/*Spec.coffee"
+      "test/**/*Spec.coffee",
+      "!test/bin/*Spec.coffee" // Wallaby can't be used to test binaries
     ],
     compilers: {
       "lib/**/*.coffee": coffeeCompiler,

@@ -47,13 +47,29 @@ describe "bin/worker", ->
       broker.start()
 
       workerProcess = spawnWorkerProcess([
-        "--api EchoApi"
-        "--addr #{addr}"
+        "--api"
+        "EchoApi"
+        "--addr"
+        addr
         "#{__dirname}/../ReadEcho"
-      ], testDone)
-      workerProcess.on "close", (code) ->
+      ], (error, result) ->
+        return testDone(error) if error
         try
-          code.should.be.equal(0)
+          result.code.should.be.equal(0) # normal exit code after SIGTERM
+          testDone()
+        catch error
+          testDone(error)
+      )
+
+      onData = sinon.spy (body) ->
+        return unless body # last data frame is false (pigato workaround)
+        body.message.should.be.equal("h e l l o")
+
+      onEnd = ->
+        try
+          onData.should.have.been.calledTwice
+          workerProcess.kill()
+          # testDone is called in workerProcess close callback
         catch error
           testDone(error)
 
@@ -66,12 +82,7 @@ describe "bin/worker", ->
         job: "ReadEcho"
         options: {}
         body: {message: "h e l l o"}
-      .on "data", (body) ->
-        return unless body # last data frame is false (pigato workaround)
-        body.message.should.be.equal("h e l l o")
-      .on "end", ->
-        console.log "end"
-        workerProcess.kill()
-        testDone()
+      .on "data", onData
+      .on "end", onEnd
 
   describe "error handling", ->
