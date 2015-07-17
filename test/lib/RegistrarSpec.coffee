@@ -5,7 +5,7 @@ ReadEcho = require "../ReadEcho"
 options = require "../config/registrar.json"
 config = require "../config/aws.json"
 
-describe "WorkerFactory", ->
+describe "Registrar", ->
   @timeout(10000) if process.env.NOCK_BACK_MODE is "record"
 
   registrar = null;
@@ -13,9 +13,7 @@ describe "WorkerFactory", ->
   beforeEach ->
     registrar = new Registrar(options, config)
 
-  describe "normal operation", ->
-
-    beforeEach ->
+  describe "domains", ->
 
     # a domain can't be deleted, so this test won't ever pass again in record mode
     it "should register `TestDomain` domain if it's not registered", ->
@@ -35,11 +33,22 @@ describe "WorkerFactory", ->
           .catch reject
           .finally recordingDone
 
-#  describe "error handling", ->
-#
-#    it "should return error if message format doesn't match", (testDone) ->
-#      registrar.on "error", (msg) -> testDone(new Error(msg))
-#      registrar.start()
+  describe "error handling", ->
+
+    it "should print the error if it happens", ->
+      registrar.swf.config.credentials.accessKeyId = "Santa Claus"
+      new Promise (resolve, reject) ->
+        nock.back "test/fixtures/registrar/RegisterTestDomainWithInvalidCredentials.json", (recordingDone) ->
+          catcherInTheRye = sinon.spy()
+          registrar.ensureAllDomains()
+          .catch catcherInTheRye
+          .finally ->
+            catcherInTheRye.should.have.been.calledWithMatch sinon.match (error) ->
+              error.code is "IncompleteSignatureException"
+          .then resolve
+          .catch reject
+          .finally recordingDone
+
 #
 #      client.on "error", (msg) -> testDone(new Error(msg))
 #      client.start()

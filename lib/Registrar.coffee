@@ -26,7 +26,7 @@ class Registrar
     .bind(@)
     .then (existingDomains) ->
       existingDomainNames = _.pluck existingDomains, "name"
-      Promise.all(@registerDomain(domain) for domain in @domains when domain.name not in existingDomainNames)
+      Promise.all(@swf.registerDomainAsync(domain) for domain in @domains when domain.name not in existingDomainNames)
   listDomains: (params) ->
     @swf.listDomainsAsync(params).bind(@)
     .then (data) ->
@@ -38,8 +38,5 @@ class Registrar
         promise = Promise.resolve([])
       promise
       .then (domainInfos) -> data.domainInfos.concat(domainInfos)
-  registerDomain: (domain) ->
-    @swf.registerDomainAsync(domain)
-    .catch ((error) -> error.code is "DomainAlreadyExistsFault"), (error) -> # noop, passthrough for other errors
 
 module.exports = Registrar
