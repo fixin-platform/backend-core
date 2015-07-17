@@ -6,6 +6,8 @@ options = require "../config/registrar.json"
 config = require "../config/aws.json"
 
 describe "WorkerFactory", ->
+  @timeout(10000) if process.env.NOCK_BACK_MODE is "record"
+
   registrar = null;
 
   beforeEach ->
@@ -17,19 +19,17 @@ describe "WorkerFactory", ->
 
     # A domain can't be deleted, so this test won't ever pass again in record mode
     it "should register `TestDomain` domain if it's not registered", ->
-      @timeout(10000) if process.env.NOCK_BACK_MODE is "record"
       new Promise (resolve, reject) ->
-        nock.back "fixtures/registrar/RegisterTestDomainIfNotRegistered.json", (recordingDone) ->
-          registrar.registerDomains()
+        nock.back "test/fixtures/registrar/RegisterTestDomainIfNotRegistered.json", (recordingDone) ->
+          registrar.ensureAllDomains()
           .then resolve
           .catch reject
           .finally recordingDone
 
-    it "should register `TestDomain` domain", ->
-      @timeout(10000) if process.env.NOCK_BACK_MODE is "record"
+    it "should skip `TestDomain` domain if it's already registered", ->
       new Promise (resolve, reject) ->
-        nock.back "fixtures/registrar/SetTestDomainAttributesNotRegistered.json", (recordingDone) ->
-          registrar.registerDomains()
+        nock.back "test/fixtures/registrar/SkipTestDomainIfAlreadyRegistered.json", (recordingDone) ->
+          registrar.ensureAllDomains()
           .then resolve
           .catch reject
           .finally recordingDone

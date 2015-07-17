@@ -22,7 +22,7 @@ global.Promise = require "bluebird"
 global.Promise.longStackTraces()
 
 global.nock = require "nock"
-global.nock.back.fixtures = "#{process.env.ROOT_DIR}/test"
+global.nock.back.fixtures = "#{process.env.ROOT_DIR}"
 # override default to be "lockdown" instead of "dryrun", otherwise we run into rate limits pretty soon
 # run "NOCK_BACK_MODE=record mocha path/to/your/test.coffee" manually to record API responses
 global.nock.back.setMode(process.env.NOCK_BACK_MODE or "lockdown")

@@ -10,13 +10,36 @@ class Registrar
       accessKeyId: String
       secretAccessKey: String
       region: String
-    @swf = Promise.promisifyAll new AWS.SWF _.defaults config,
+    @swf = Promise.promisifyAll new AWS.SWF _.extend
       apiVersion: "2012-01-25"
-  register: ->
+    , config
+  ensureAll: ->
     Promise.bind(@)
-    .then @registerDomains
-  registerDomains: ->
-    Promise.all(@swf.registerDomainAsync(domain) for domain in @domains)
-
+    .then @ensureAllDomains
+  ensureAllDomains: ->
+    Promise.join(
+      @listDomains({registrationStatus: "REGISTERED"}),
+      @listDomains({registrationStatus: "DEPRECATED"}),
+      (registeredDomains, deprecatedDomains) ->
+        registeredDomains.concat(deprecatedDomains)
+    )
+    .bind(@)
+    .then (existingDomains) ->
+      existingDomainNames = _.pluck existingDomains, "name"
+      Promise.all(@registerDomain(domain) for domain in @domains when domain.name not in existingDomainNames)
+  listDomains: (params) ->
+    @swf.listDomainsAsync(params).bind(@)
+    .then (data) ->
+      if data.nextPageToken
+        params = _clone params
+        params.nextPageToken = data.nextPageToken
+        promise = @listDomains(params)
+      else
+        promise = Promise.resolve([])
+      promise
+      .then (domainInfos) -> data.domainInfos.concat(domainInfos)
+  registerDomain: (domain) ->
+    @swf.registerDomainAsync(domain)
+    .catch ((error) -> error.code is "DomainAlreadyExistsFault"), (error) -> # noop, passthrough for other errors
 
 module.exports = Registrar
