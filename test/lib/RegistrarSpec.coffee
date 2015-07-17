@@ -16,19 +16,26 @@ describe "Registrar", ->
   describe "domains", ->
 
     # a domain can't be deleted, so this test won't ever pass again in record mode
-    it "should register `TestDomain` domain if it's not registered", ->
+    it "should register `TestDomain` domain", ->
       new Promise (resolve, reject) ->
-        nock.back "test/fixtures/registrar/RegisterTestDomainIfNotRegistered.json", (recordingDone) ->
-          registrar.ensureAllDomains()
+        nock.back "test/fixtures/registrar/RegisterTestDomain.json", (recordingDone) ->
+          registrar.registerAllDomains()
           .then resolve
           .catch reject
           .finally recordingDone
 
-    # you might have already registered some other domains, so if you re-record the fixture, it'll be different (and I think it's OK)
-    it "should skip `TestDomain` domain if it's already registered", ->
+    it "should register `ListenToYourHeart` workflow type", ->
       new Promise (resolve, reject) ->
-        nock.back "test/fixtures/registrar/SkipTestDomainIfAlreadyRegistered.json", (recordingDone) ->
-          registrar.ensureAllDomains()
+        nock.back "test/fixtures/registrar/RegisterListenToYourHeartWorkflowType.json", (recordingDone) ->
+          registrar.registerAllWorkflowTypes()
+          .then resolve
+          .catch reject
+          .finally recordingDone
+
+    it "should register `Echo` activity type", ->
+      new Promise (resolve, reject) ->
+        nock.back "test/fixtures/registrar/RegisterEchoActivityType.json", (recordingDone) ->
+          registrar.registerAllActivityTypes()
           .then resolve
           .catch reject
           .finally recordingDone
@@ -40,7 +47,7 @@ describe "Registrar", ->
       new Promise (resolve, reject) ->
         nock.back "test/fixtures/registrar/RegisterTestDomainWithInvalidCredentials.json", (recordingDone) ->
           catcherInTheRye = sinon.spy()
-          registrar.ensureAllDomains()
+          registrar.registerAllDomains()
           .catch catcherInTheRye
           .finally ->
             catcherInTheRye.should.have.been.calledWithMatch sinon.match (error) ->

@@ -15,18 +15,22 @@ class Registrar
     , config
   ensureAll: ->
     Promise.bind(@)
-    .then @ensureAllDomains
-  ensureAllDomains: ->
-    Promise.join(
-      @listDomains({registrationStatus: "REGISTERED"}),
-      @listDomains({registrationStatus: "DEPRECATED"}),
-      (registeredDomains, deprecatedDomains) ->
-        registeredDomains.concat(deprecatedDomains)
-    )
-    .bind(@)
-    .then (existingDomains) ->
-      existingDomainNames = _.pluck existingDomains, "name"
-      Promise.all(@swf.registerDomainAsync(domain) for domain in @domains when domain.name not in existingDomainNames)
+    .then @registerAllDomains
+  registerAllDomains: ->
+    Promise.all(@registerDomain(domain) for domain in @domains)
+  registerAllWorkflowTypes: ->
+    Promise.all(@registerWorkflowType(workflowType) for workflowType in @workflowTypes)
+  registerAllActivityTypes: ->
+    Promise.all(@registerActivityType(activityType) for activityType in @activityTypes)
+  registerDomain: (domain) ->
+    @swf.registerDomainAsync(domain)
+    .catch ((error) -> error.code is "DomainAlreadyExistsFault"), (error) -> # noop, passthrough for other errors
+  registerWorkflowType: (workflowType) ->
+    @swf.registerWorkflowTypeAsync(workflowType)
+    .catch ((error) -> error.code is "TypeAlreadyExistsFault"), (error) -> # noop, passthrough for other errors
+  registerActivityType: (activityType) ->
+    @swf.registerActivityTypeAsync(activityType)
+    .catch ((error) -> error.code is "TypeAlreadyExistsFault"), (error) -> # noop, passthrough for other errors
   listDomains: (params) ->
     @swf.listDomainsAsync(params).bind(@)
     .then (data) ->
