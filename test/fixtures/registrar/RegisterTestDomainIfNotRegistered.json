@@ -1,0 +1,19 @@
+[
+    {
+        "scope": "https://swf.us-east-1.amazonaws.com:443",
+        "method": "POST",
+        "path": "/",
+        "body": {
+            "name": "TestDomain",
+            "workflowExecutionRetentionPeriodInDays": "7",
+            "description": "TestDomain description"
+        },
+        "status": 200,
+        "response": "",
+        "headers": {
+            "x-amzn-requestid": "d875f416-2c51-11e5-bd7b-5983b76e7894",
+            "content-type": "application/x-amz-json-1.0",
+            "content-length": "0"
+        }
+    }
+]

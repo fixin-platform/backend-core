@@ -1,6 +1,5 @@
 --watch-extensions json
 --recursive
 --ui bdd
---async-only
 --require test/mocha.coffee
 --compilers coffee:coffee-script/register

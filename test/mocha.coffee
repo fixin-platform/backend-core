@@ -16,7 +16,13 @@ chai.use(chaiSinon)
 global.sinon = require("sinon")
 
 global.nconf = require "nconf"
-global.config = global.nconf.file({file: "#{process.env.ROOT_DIR}/test/config.json"}).get()
+global.config = global.nconf.file({file: "#{process.env.ROOT_DIR}/test/registrar.json"}).get()
 
 global.Promise = require "bluebird"
 global.Promise.longStackTraces()
+
+global.nock = require "nock"
+global.nock.back.fixtures = "#{process.env.ROOT_DIR}/test"
+# override default to be "lockdown" instead of "dryrun", otherwise we run into rate limits pretty soon
+# run "NOCK_BACK_MODE=record mocha path/to/your/test.coffee" manually to record API responses
+global.nock.back.setMode(process.env.NOCK_BACK_MODE or "lockdown")

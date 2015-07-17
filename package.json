@@ -25,18 +25,19 @@
     "chai-things": "^0.2.0",
     "mocha": "=2.1.0",
     "nconf": "^0.7.1",
+    "nock": "^2.7.0",
     "sinon": "^1.15.4",
     "sinon-chai": "^2.8.0"
   },
   "dependencies": {
+    "aws-sdk": "^2.1.39",
     "bluebird": "^2.9.33",
     "death": "^1.0.0",
     "mtr-match": "0.0.4",
     "path-parse": "^1.0.5",
-    "pigato": "0.0.40",
     "readable-stream": "^2.0.1",
     "underscore": "^1.8.3",
-    "underscore-deep-extend": "0.0.5",
+    "underscore.deep": "^0.5.1",
     "yargs": "^3.15.0"
   }
 }

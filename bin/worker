@@ -29,12 +29,14 @@ for jobPath in argv._
 
 worker = WorkerFactory.create(argv.addr, argv.api, {}, jobs)
 
-worker.on "stop", ->
-  process.exit(worker.exitCode) # only exit after we have closed the sockets, etc
-
 shutdown = (exitCode) ->
   worker.exitCode = exitCode
   worker.stop()
+
+(require "death")(-> shutdown(0)) # handle SIGINT, SIGQUIT, SIGTERM, return normal exit code (signal probably sent by admin)
+
+worker.on "stop", ->
+  process.exit(worker.exitCode) # only exit after we have closed the sockets, etc
 
 worker.on "error", (msg) ->
   console.error(msg)
@@ -43,7 +45,5 @@ worker.on "error", (msg) ->
       # winter is coming... but don't shutdown just yet
     else
       shutdown(1) # something really bad happened, let's shutdown
-
-(require "death")(-> shutdown(0)) # handle SIGINT, SIGQUIT, SIGTERM, return normal exit code (signal probably sent by admin)
 
 worker.start("vodka") # hope it helps

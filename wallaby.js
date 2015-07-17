@@ -1,7 +1,6 @@
 var local = getLocalWallaby();
 var _ = require("underscore");
-underscoreDeepExtend = require("underscore-deep-extend");
-_.mixin({deepExtend: underscoreDeepExtend(_)});
+_.mixin(require("underscore.deep"));
 
 module.exports = function(wallaby) {
   var coffeeCompiler = wallaby.compilers.coffeeScript();
@@ -12,7 +11,7 @@ module.exports = function(wallaby) {
     //  "lib/**/*.coffee",
     //  "test/ReadEcho.coffee",
     //  "test/mocha.coffee",
-    //  "test/config.json"
+    //  "config/registrar.json"
     //],
     //tests: [
     //  "test/**/*.coffee",

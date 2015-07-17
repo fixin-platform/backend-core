@@ -1,0 +1,50 @@
+#!/usr/bin/env coffee
+
+# require paths, check instanceof, call register (v1), ok or expected error = ok, set options (which might have changed)
+
+path = require "path"
+parse = require "path-parse"
+yargs = require "yargs"
+domain = require "domain"
+Registrar = require "../lib/Registrar"
+
+argv = yargs
+.usage('Usage: $0 [options] pathToClass1 ... pathToClassN')
+.options(
+  "c":
+    alias: "config"
+    type: "config"
+    demand: true
+)
+.demand(1)
+.argv
+
+classes = {}
+for classPath in argv._
+  name = parse(classPath).name
+  classes[name] = require path.resolve(process.cwd(), classPath)
+
+registrar = new Registrar(
+  classes: classes
+  config: argv.config
+)
+
+shutdown = (exitCode) ->
+  registrar.exitCode = exitCode
+  registrar.stop()
+
+(require "death")(-> shutdown(0)) # handle SIGINT, SIGQUIT, SIGTERM, return normal exit code (signal probably sent by admin)
+
+registrar.on "stop", ->
+  process.exit(registrar.exitCode) # only exit after we have closed the sockets, etc
+
+registrar.on "error", (msg) ->
+  console.error(msg)
+  switch msg
+    when "ERR_MSG_TYPE_INVALID", "ERR_MSG_HEADER" # internal worker errors
+# winter is coming... but don't shutdown just yet
+    else
+      shutdown(1) # something really bad happened, let's shutdown
+
+
+registrar.start("vodka") # hope it helps
