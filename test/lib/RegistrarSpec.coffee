@@ -17,7 +17,7 @@ describe "WorkerFactory", ->
 
     beforeEach ->
 
-    # A domain can't be deleted, so this test won't ever pass again in record mode
+    # a domain can't be deleted, so this test won't ever pass again in record mode
     it "should register `TestDomain` domain if it's not registered", ->
       new Promise (resolve, reject) ->
         nock.back "test/fixtures/registrar/RegisterTestDomainIfNotRegistered.json", (recordingDone) ->
@@ -26,6 +26,7 @@ describe "WorkerFactory", ->
           .catch reject
           .finally recordingDone
 
+    # you might have already registered some other domains, so if you re-record the fixture, it'll be different (and I think it's OK)
     it "should skip `TestDomain` domain if it's already registered", ->
       new Promise (resolve, reject) ->
         nock.back "test/fixtures/registrar/SkipTestDomainIfAlreadyRegistered.json", (recordingDone) ->
