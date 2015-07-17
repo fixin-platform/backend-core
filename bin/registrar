@@ -6,7 +6,7 @@ path = require "path"
 parse = require "path-parse"
 yargs = require "yargs"
 domain = require "domain"
-Registrar = require "../lib/Registrar"
+Registrar = require "../lib/Actor/Registrar"
 
 argv = yargs
 .usage('Usage: $0 [options] pathToClass1 ... pathToClassN')

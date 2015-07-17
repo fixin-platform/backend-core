@@ -9,13 +9,13 @@ module.exports = function(wallaby) {
     testFramework: "mocha",
     //files: [
     //  "lib/**/*.coffee",
-    //  "test/ReadEcho.coffee",
+    //  "test/ListenToYourHeart.coffee",
     //  "test/mocha.coffee",
     //  "config/registrar.json"
     //],
     //tests: [
     //  "test/**/*.coffee",
-    //  "!test/ReadEcho.coffee",
+    //  "!test/ListenToYourHeart.coffee",
     //  "!test/mocha.coffee"
     //],
     files: [

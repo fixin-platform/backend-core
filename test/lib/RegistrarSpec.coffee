@@ -1,7 +1,6 @@
 helpers = require "../helpers"
 _ = require "underscore"
-Registrar = require "../../lib/Registrar"
-ReadEcho = require "../ReadEcho"
+Registrar = require "../../lib/Actor/Registrar"
 options = require "../config/registrar.json"
 config = require "../config/aws.json"
 

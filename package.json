@@ -33,6 +33,7 @@
     "aws-sdk": "^2.1.39",
     "bluebird": "^2.9.33",
     "death": "^1.0.0",
+    "errors": "^0.3.0",
     "mtr-match": "0.0.4",
     "path-parse": "^1.0.5",
     "readable-stream": "^2.0.1",
