@@ -4,7 +4,6 @@ path = require "path"
 parse = require "path-parse"
 yargs = require "yargs"
 domain = require "domain"
-WorkerFactory = require "../lib/WorkerFactory"
 
 argv = yargs
   .usage('Usage: $0 [options] pathToJob1 ... pathToJobN')

@@ -2,13 +2,14 @@ _ = require "underscore"
 Promise = require "bluebird"
 AWS = require "aws-sdk"
 Match = require "mtr-match"
-errors = require "./errors"
+errors = require "../errors"
+Task = require "../Task"
 
-class DecisionTask
+class DecisionTask extends Task
   constructor: (options) ->
-    _.extend @, options
     Match.check options, Match.ObjectIncluding
       events: [Object]
+    super
   execute: ->
     @decisions = []
     @modifier = {}
@@ -25,5 +26,6 @@ class DecisionTask
   # default noops, can be implemented by child class if necessary
   DecisionTaskScheduled: (event) ->
   DecisionTaskStarted: (event) ->
+  ActivityTaskStarted: (event) ->
 
 module.exports = DecisionTask

@@ -1,5 +1,7 @@
 errors = require "errors"
 
+errors.stacks true
+
 errors.create
   name: "EventHandlerNotImplementedError"
   defaultExplanation: "The implementor of this decision task hasn't anticipated such event type"

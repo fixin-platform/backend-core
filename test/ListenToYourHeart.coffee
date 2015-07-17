@@ -1,5 +1,5 @@
 _ = require "underscore"
-DecisionTask = require "../lib/DecisionTask"
+DecisionTask = require "../lib/Task/DecisionTask"
 
 class ListenToYourHeart extends DecisionTask
   WorkflowExecutionStarted: (event) ->
@@ -10,6 +10,17 @@ class ListenToYourHeart extends DecisionTask
           name: "Echo"
           version: "1.0.0"
         activityId: "Echo"
-        input: JSON.stringify({message: "h e l l o"})
+        input: event.workflowExecutionStartedEventAttributes.input
+  ActivityTaskCompleted: (event) ->
+    @decisions.push
+      decisionType: "CompleteWorkflowExecution"
+      completeWorkflowExecutionDecisionAttributes:
+        result: event.activityTaskCompletedEventAttributes.result
+  ActivityTaskFailed: (event) ->
+    @decisions.push
+      decisionType: "FailWorkflowExecution"
+      failWorkflowExecutionDecisionAttributes:
+        reason: event.activityTaskFailedEventAttributes.reason
+        details: event.activityTaskFailedEventAttributes.details
 
 module.exports = ListenToYourHeart
