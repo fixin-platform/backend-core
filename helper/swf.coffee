@@ -7,6 +7,6 @@ module.exports = (options) ->
     accessKeyId: String
     secretAccessKey: String
     region: String
-  _.defaults options,
-    apiVersion: "2012-01-25"
-  Promise.promisifyAll new AWS.SWF(options)
+  Promise.promisifyAll new AWS.SWF _.extend
+    apiVersion: "2012-01-25",
+  options

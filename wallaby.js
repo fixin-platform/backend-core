@@ -3,8 +3,6 @@ var _ = require("underscore");
 _.mixin(require("underscore.deep"));
 
 module.exports = function(wallaby) {
-  var coffeeCompiler = wallaby.compilers.coffeeScript();
-
   var config = _.deepExtend({
     testFramework: "mocha",
     //files: [
@@ -29,10 +27,6 @@ module.exports = function(wallaby) {
     tests: [
       "test/**/*Spec.coffee"
     ],
-    compilers: {
-      "lib/**/*.coffee": coffeeCompiler,
-      "test/**/*.coffee": coffeeCompiler
-    },
     env: {
       type: "node",
       runner: "node"

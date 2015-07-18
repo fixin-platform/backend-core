@@ -5,16 +5,29 @@ class Echo extends ActivityTask
   constructor: (options) ->
     _.extend @, options
   execute: ->
-    new Promise (resolve, reject) =>
-      @input.on "readable", =>
-        while (object = @input.read())
-          if object.message is "Schmetterling!"
-            throw new Error("Too afraid!")
-          else
-            @output.write(object)
-        true
-      @input.on "end", resolve
-      @input.on "error", reject
+    Promise.bind(@)
+    .then ->
+      new Promise (resolve, reject) =>
+        @input.on "readable", =>
+          console.log "readable"
+          try
+            while (object = @input.read())
+              console.log object
+              if object.message is "Schmetterling!"
+                throw new Error("Too afraid!")
+              else
+                @output.write(object)
+            true
+          catch error
+            console.log error
+            reject(error)
+        @input.on "end", resolve
+        @input.on "error", reject
+      .bind(@)
+      .catch (error) ->
+        @input.removeAllListeners()
+        throw error
     .then -> @output.end()
+
 
 module.exports = Echo

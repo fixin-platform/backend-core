@@ -6,10 +6,14 @@ winston = require "winston"
 
 class Actor
   constructor: (options, dependencies) ->
+    Match.check options, Match.ObjectIncluding
+      type: String
     Match.check dependencies,
       swf: AWS.SWF
       logger: winston.Logger
     _.extend @, options
     _.extend @, dependencies
+    dependencies.logger.extend @
+  details: (details) -> _.extend _.pick(@, @signature()), details
 
 module.exports = Actor

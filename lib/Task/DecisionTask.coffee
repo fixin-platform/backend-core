@@ -26,6 +26,8 @@ class DecisionTask extends Task
   # default noops, can be implemented by child class if necessary
   DecisionTaskScheduled: (event) ->
   DecisionTaskStarted: (event) ->
+  DecisionTaskCompleted: (event) ->
+  ActivityTaskScheduled: (event) ->
   ActivityTaskStarted: (event) ->
 
 module.exports = DecisionTask
