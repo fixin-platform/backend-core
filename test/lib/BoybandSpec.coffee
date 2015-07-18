@@ -12,6 +12,7 @@ dependenciesOptions = require "../config/dependencies.json"
 
 describe "Boyband: Decider & Worker", ->
   @timeout(30000) if process.env.NOCK_BACK_MODE is "record"
+  @slow(500) # relevant for tests using fixtures
 
   registrar = null; decider = null; worker = null;
 
@@ -66,6 +67,9 @@ describe "Boyband: Decider & Worker", ->
 
     it "should run through `ListenToYourHeart` workflow multiple times", ->
       new Promise (resolve, reject) ->
+        worker.details = _.wrap worker.details, (parent, args...) ->
+          args[0]?.error?.stack = "~ stripped for tests ~"
+          parent.apply(@, args)
         nock.back "test/fixtures/decider/ListenToYourHeartMultiple.json", (recordingDone) ->
           Promise.resolve()
           .then -> registrar.registerAll()
