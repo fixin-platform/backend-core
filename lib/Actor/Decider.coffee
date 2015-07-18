@@ -12,8 +12,6 @@ class Decider extends Actor
         name: String
       identity: String
       taskCls: Function # DecisionTask constructor
-    _.extend options,
-      type: "Decider"
     super
   signature: -> ["domain", "taskList", "identity"]
   start: ->

@@ -13,8 +13,6 @@ class Worker extends Actor
         name: String
       identity: String
       taskCls: Function # ActivityTask constructor
-    _.extend options,
-      type: "Worker"
     super
   signature: -> ["domain", "taskList", "identity"]
   start: ->

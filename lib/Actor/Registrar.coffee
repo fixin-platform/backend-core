@@ -9,8 +9,6 @@ class Registrar extends Actor
       domains: [Object]
       workflowTypes: [Object]
       activityTypes: [Object]
-    _.extend options,
-      type: "Registrar"
     super
   registerAll: ->
     Promise.bind(@)

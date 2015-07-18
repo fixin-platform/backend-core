@@ -9,4 +9,4 @@ module.exports = (options) ->
     region: String
   Promise.promisifyAll new AWS.SWF _.extend
     apiVersion: "2012-01-25",
-  options
+  , options
