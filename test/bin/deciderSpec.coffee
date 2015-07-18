@@ -9,7 +9,7 @@ definitions = require "../definitions.json"
 config = require "../config.json"
 
 describe "bin/decider", ->
-  registrar = null;
+  registrar = null; decider = null; worker = null;
 
   dependencies =
     logger: createLogger(config.logger)
@@ -28,16 +28,16 @@ describe "bin/decider", ->
       nock.back "test/fixtures/RegisterAll.json", (recordingDone) ->
         Promise.resolve()
         .then -> registrar.registerAll()
-        .then -> execFileAsync("#{process.env.ROOT_DIR}/bin/worker", [
+        .then -> execFileAsync("#{process.env.ROOT_DIR}/bin/decider", [
           "--config"
           "#{process.env.ROOT_DIR}/test/config.json"
           "--domain"
           "TestDomain"
           "--identity"
-          "Echo-test-worker"
+          "ListenToYourHeart-test-decider"
           "--max-loops"
           "1"
-          "#{process.env.ROOT_DIR}/test/Echo.coffee"
+          "#{process.env.ROOT_DIR}/test/ListenToYourHeart.coffee"
         ])
         .spread (stdout, stderr) ->
           stdout.should.contain("starting")

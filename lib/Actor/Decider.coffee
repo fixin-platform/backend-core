@@ -12,18 +12,21 @@ class Decider extends Actor
         name: String
       identity: String
       taskCls: Function # DecisionTask constructor
+      maxLoops: Match.Optional(Match.Integer)
     super
   signature: -> ["domain", "taskList", "identity"]
   start: ->
     @info "Decider:starting", @details()
     @loop()
   loop: ->
+    return if @isStopped
     process.nextTick =>
       Promise.bind(@)
       .then @poll
       .catch (error) ->
         @error "Decider:errored", @details(error)
         throw error # let it crash and restart
+      .then @countdown
       .then @loop
   poll: ->
     @info "Decider:polling", @details()

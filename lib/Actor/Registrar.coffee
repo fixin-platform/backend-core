@@ -4,8 +4,8 @@ Match = require "mtr-match"
 Actor = require "../Actor"
 
 class Registrar extends Actor
-  constructor: (options, dependencies) ->
-    Match.check options,
+  constructor: (definitions, dependencies) ->
+    Match.check definitions,
       domains: [Object]
       workflowTypes: [Object]
       activityTypes: [Object]

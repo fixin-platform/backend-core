@@ -9,7 +9,7 @@ module.exports = function(wallaby) {
     //  "lib/**/*.coffee",
     //  "test/ListenToYourHeart.coffee",
     //  "test/mocha.coffee",
-    //  "config/registrar.json"
+    //  "config/definitions.json"
     //],
     //tests: [
     //  "test/**/*.coffee",

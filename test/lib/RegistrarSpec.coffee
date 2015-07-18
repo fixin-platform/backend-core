@@ -1,10 +1,11 @@
 helpers = require "../helpers"
 _ = require "underscore"
+Promise = require "bluebird"
 createLogger = require "../../helper/logger"
 createSWF = require "../../helper/swf"
 Registrar = require "../../lib/Actor/Registrar"
-registrarOptions = require "../config/registrar.json"
-dependenciesOptions = require "../config/dependencies.json"
+definitions = require "../definitions.json"
+config = require "../config.json"
 
 describe "Registrar", ->
   @timeout(10000) if process.env.NOCK_BACK_MODE is "record"
@@ -12,11 +13,11 @@ describe "Registrar", ->
   registrar = null;
 
   dependencies =
-    logger: createLogger(dependenciesOptions.logger)
-    swf: createSWF(dependenciesOptions.swf)
+    logger: createLogger(config.logger)
+    swf: createSWF(config.swf)
 
   beforeEach ->
-    registrar = new Registrar(registrarOptions, dependencies)
+    registrar = new Registrar(definitions, dependencies)
 
   describe "domains", ->
 

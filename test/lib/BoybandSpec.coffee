@@ -1,9 +1,10 @@
 helpers = require "../helpers"
 _ = require "underscore"
-dependenciesOptions = require "../config/dependencies.json"
+Promise = require "bluebird"
+config = require "../config.json"
 createLogger = require "../../helper/logger"
 createSWF = require "../../helper/swf"
-registrarOptions = require "../config/registrar.json"
+definitions = require "../definitions.json"
 Registrar = require "../../lib/Actor/Registrar"
 Decider = require "../../lib/Actor/Decider"
 Worker = require "../../lib/Actor/Worker"
@@ -17,11 +18,11 @@ describe "Boyband: Decider & Worker", ->
   registrar = null; decider = null; worker = null;
 
   dependencies =
-    logger: createLogger(dependenciesOptions.logger)
-    swf: createSWF(dependenciesOptions.swf)
+    logger: createLogger(config.logger)
+    swf: createSWF(config.swf)
 
   beforeEach ->
-    registrar = new Registrar(registrarOptions, dependencies)
+    registrar = new Registrar(definitions, dependencies)
     decider = new Decider(
       domain: "TestDomain"
       taskList:

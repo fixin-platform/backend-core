@@ -13,18 +13,21 @@ class Worker extends Actor
         name: String
       identity: String
       taskCls: Function # ActivityTask constructor
+      maxLoops: Match.Optional(Match.Integer)
     super
   signature: -> ["domain", "taskList", "identity"]
   start: ->
     @info "Worker:starting", @details()
     @loop()
   loop: ->
+    return if @isStopped
     process.nextTick =>
       Promise.bind(@)
       .then @poll
       .catch (error) ->
         @error "Worker:errored", @details(error)
         throw error # let it crash and restart
+      .then @countdown
       .then @loop
   poll: ->
     @info "Worker:polling", @details()
@@ -35,7 +38,7 @@ class Worker extends Actor
         taskList: @taskList
         identity: @identity
     .then (options) ->
-      return if not options.taskToken # "Call me later", said Amazon
+      return false if not options.taskToken # "Call me later", said Amazon
       new Promise (resolve, reject) =>
         inputArray = options.input = JSON.parse(options.input)
         outputArray = []

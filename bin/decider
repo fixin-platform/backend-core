@@ -4,12 +4,12 @@ path = require "path"
 parse = require "path-parse"
 yargs = require "yargs"
 domain = require "domain"
-Worker = require "../lib/Actor/Worker"
+Decider = require "../lib/Actor/Decider"
 createLogger = require "../helper/logger"
 createSWF = require "../helper/swf"
 
 argv = yargs
-  .usage('Usage: $0 [options] activityTaskPath')
+  .usage('Usage: $0 [options] decisionTaskPath')
   .options(
     "c":
       alias: "config"
@@ -29,7 +29,7 @@ argv = yargs
     "t":
       alias: "task-list-name"
       type: "string"
-      description: "Amazon SWF taskList name (guessed from activityTaskPath by default)"
+      description: "Amazon SWF taskList name (guessed from decisionTaskPath by default)"
       demand: false
       default: null
     "m":
@@ -49,7 +49,7 @@ taskPath = argv._[0]
 taskListName = argv.taskListName or parse(taskPath).name
 taskCls = require path.resolve(process.cwd(), taskPath)
 
-worker = new Worker
+decider = new Decider
   domain: argv.domain
   taskList:
     name: taskListName
@@ -60,6 +60,6 @@ worker = new Worker
   logger: createLogger(config.logger)
   swf: createSWF(config.swf)
 
-worker.start("vodka") # hope it helps
+decider.start()
 
 (require "death")(-> process.exit(0)) # In nomine SIGINT, SIGTERM, SIGQUIT, amen

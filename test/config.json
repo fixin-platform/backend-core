@@ -1,0 +1,29 @@
+{
+  "swf": {
+    "accessKeyId": "AKIAJN3GZ4VPACORHKYQ",
+    "secretAccessKey": "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",
+    "region": "us-east-1"
+  },
+  "logger": {
+    "sanitizedProperties": ["credentials", "accessToken", "refreshToken"],
+    "transports": {
+      "Loggly": {
+        "silent": true,
+        "level": "debug",
+        "handleExceptions": false,
+        "token": "fbfc83c6-73cf-4314-9216-0b10590069a6",
+        "subdomain": "dengorbachev",
+        "tags": ["dev"],
+        "json": true
+      },
+      "Console": {
+        "silent": false,
+        "level": "info",
+        "handleExceptions": false,
+        "prettyPrint": true,
+        "colorize": true,
+        "showLevel": false
+      }
+    }
+  }
+}

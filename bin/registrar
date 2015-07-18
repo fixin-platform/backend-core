@@ -31,4 +31,4 @@ registrar = new Registrar options,
 
 registrar.registerAll()
 
-(require "death")(->) # SIGINT, SIGTERM, SIGQUIT, amen
+(require "death")(-> process.exit(0)) # In nomine SIGINT, SIGTERM, SIGQUIT, amen
