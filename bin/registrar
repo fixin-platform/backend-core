@@ -33,7 +33,7 @@ shutdown = (exitCode) ->
   registrar.exitCode = exitCode
   registrar.stop()
 
-(require "death")(-> shutdown(0)) # handle SIGINT, SIGQUIT, SIGTERM, return normal exit code (signal probably sent by admin)
+(require "death")() # handle SIGINT, SIGQUIT, SIGTERM, return normal exit code (signal probably sent by admin)
 
 registrar.on "stop", ->
   process.exit(registrar.exitCode) # only exit after we have closed the sockets, etc

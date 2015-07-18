@@ -21,10 +21,10 @@ class Decider extends Actor
     process.nextTick =>
       Promise.bind(@)
       .then @poll
-      .then @loop
       .catch (error) ->
         @error "Decider:errored", @details(error)
         throw error # let it crash and restart
+      .then @loop
   poll: ->
     @info "Decider:polling", @details()
     Promise.bind(@)

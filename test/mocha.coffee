@@ -15,11 +15,11 @@ chai.use(chaiSinon)
 
 global.sinon = require("sinon")
 
+Promise = require "bluebird"
+Promise.longStackTraces()
+
 global.nconf = require "nconf"
 global.config = global.nconf.file({file: "#{process.env.ROOT_DIR}/test/registrar.json"}).get()
-
-global.Promise = require "bluebird"
-global.Promise.longStackTraces()
 
 global.nock = require "nock"
 global.nock.back.fixtures = "#{process.env.ROOT_DIR}"

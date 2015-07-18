@@ -22,10 +22,10 @@ class Worker extends Actor
     process.nextTick =>
       Promise.bind(@)
       .then @poll
-      .then @loop
       .catch (error) ->
         @error "Worker:errored", @details(error)
         throw error # let it crash and restart
+      .then @loop
   poll: ->
     @info "Worker:polling", @details()
     Promise.bind(@)

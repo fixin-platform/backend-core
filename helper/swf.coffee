@@ -1,6 +1,7 @@
 _ = require "underscore"
 AWS = require "aws-sdk"
 Match = require "mtr-match"
+Promise = require "bluebird"
 
 module.exports = (options) ->
   Match.check options,
