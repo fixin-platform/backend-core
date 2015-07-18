@@ -65,7 +65,6 @@ class Worker extends Actor
           taskToken: options.taskToken
           result: JSON.stringify outputArray
       .catch (error) ->
-        console.log "catching the error"
         errorInJSON = errors.errorToJSON error
         @info "Worker:failed", @details({error: errorInJSON, options: options})
         @swf.respondActivityTaskFailedAsync

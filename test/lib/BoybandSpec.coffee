@@ -68,16 +68,16 @@ describe "Boyband: Decider & Worker", ->
       new Promise (resolve, reject) ->
         nock.back "test/fixtures/decider/ListenToYourHeartMultiple.json", (recordingDone) ->
           Promise.resolve()
-#          .then -> registrar.registerAll()
+          .then -> registrar.registerAll()
           .then clean
           # Normally, workflow execution should be started by frontend code
-#          .then -> decider.swf.startWorkflowExecutionAsync(
-#            generateWorkflowExecutionParams("ListenToYourHeart-test-workflow-1", "h e l l o")
-#          )
+          .then -> decider.swf.startWorkflowExecutionAsync(
+            generateWorkflowExecutionParams("ListenToYourHeart-test-workflow-1", "h e l l o")
+          )
           .then -> decider.swf.startWorkflowExecutionAsync(
             generateWorkflowExecutionParams("ListenToYourHeart-test-workflow-2", "Schmetterling!")
           )
-#          .then -> decider.poll() # ScheduleActivityTask 1
+          .then -> decider.poll() # ScheduleActivityTask 1
           .then -> decider.poll() # ScheduleActivityTask 2
           .then -> worker.poll() # Echo 1 Completed
           .then -> decider.poll() # CompleteWorkflowExecution
@@ -86,7 +86,8 @@ describe "Boyband: Decider & Worker", ->
           .then -> decider.swf.startWorkflowExecutionAsync(
             generateWorkflowExecutionParams("ListenToYourHeart-test-workflow-3", "Knock, knock, Neo")
           )
-          .then -> worker.poll() # Echo 1 Completed
+          .then -> decider.poll() # ScheduleActivityTask 3
+          .then -> worker.poll() # Echo 3 Completed
           .then -> decider.poll() # CompleteWorkflowExecution
           .then resolve
           .catch reject
