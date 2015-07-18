@@ -1,4 +1,5 @@
 _ = require "underscore"
+Match = require "mtr-match"
 ActivityTask = require "../lib/Task/ActivityTask"
 
 class Echo extends ActivityTask
@@ -9,17 +10,16 @@ class Echo extends ActivityTask
     .then ->
       new Promise (resolve, reject) =>
         @input.on "readable", =>
-          console.log "readable"
           try
             while (object = @input.read())
-              console.log object
+              Match.check object,
+                message: String
               if object.message is "Schmetterling!"
                 throw new Error("Too afraid!")
               else
                 @output.write(object)
             true
           catch error
-            console.log error
             reject(error)
         @input.on "end", resolve
         @input.on "error", reject

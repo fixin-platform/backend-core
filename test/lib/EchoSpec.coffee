@@ -16,10 +16,11 @@ describe "Echo", ->
 
     it "should stop reading off input if it throws an exception", ->
       echo.input._read = ->
-        @push "Schmetterling!"
-        @push "Not read"
+        @push {message: "Schmetterling!"}
+        @push {message: "Not read"}
         @push null
       echo.output._write = sinon.spy()
       echo.execute()
-      .then ->
+      .catch ((error) -> error.message is "Too afraid!"), ((error) ->)
+      .finally ->
         echo.output._write.should.have.not.been.called
