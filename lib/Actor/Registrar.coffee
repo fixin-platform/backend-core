@@ -1,8 +1,15 @@
 _ = require "underscore"
 Promise = require "bluebird"
+Match = require "mtr-match"
 Actor = require "../Actor"
 
 class Registrar extends Actor
+  constructor: (options, dependencies) ->
+    Match.check options,git 
+      domains: [Object]
+      workflowTypes: [Object]
+      activityTypes: [Object]
+    super
   registerAll: ->
     Promise.bind(@)
     .then @registerAllDomains

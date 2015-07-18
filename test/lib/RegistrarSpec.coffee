@@ -1,16 +1,22 @@
 helpers = require "../helpers"
 _ = require "underscore"
+createLogger = require "../../helper/logger"
+createSWF = require "../../helper/swf"
 Registrar = require "../../lib/Actor/Registrar"
-options = require "../config/registrar.json"
-config = require "../config/aws.json"
+registrarOptions = require "../config/registrar.json"
+dependenciesOptions = require "../config/dependencies.json"
 
 describe "Registrar", ->
   @timeout(10000) if process.env.NOCK_BACK_MODE is "record"
 
   registrar = null;
 
+  dependencies =
+    logger: createLogger(dependenciesOptions.logger)
+    swf: createSWF(dependenciesOptions.swf)
+
   beforeEach ->
-    registrar = new Registrar(options, config)
+    registrar = new Registrar(registrarOptions, dependencies)
 
   describe "domains", ->
 

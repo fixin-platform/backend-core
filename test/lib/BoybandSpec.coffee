@@ -5,8 +5,8 @@ Decider = require "../../lib/Actor/Decider"
 Worker = require "../../lib/Actor/Worker"
 ListenToYourHeart = require "../ListenToYourHeart"
 Echo = require "../Echo"
-options = require "../config/registrar.json"
-config = require "../config/aws.json"
+options = require "./registrar.json"
+config = require "./aws.json"
 
 describe "Boyband: Decider & Worker", ->
   @timeout(10000) if process.env.NOCK_BACK_MODE is "record"

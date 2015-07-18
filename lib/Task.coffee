@@ -2,7 +2,7 @@ _ = require "underscore"
 Promise = require "bluebird"
 AWS = require "aws-sdk"
 Match = require "mtr-match"
-errors = require "./errors"
+errors = require "./../helper/errors"
 
 class Task
   constructor: (options) ->

@@ -1,17 +1,15 @@
 _ = require "underscore"
 Promise = require "bluebird"
-AWS = require "aws-sdk"
 Match = require "mtr-match"
+AWS = require "aws-sdk"
+winston = require "winston"
 
 class Actor
-  constructor: (options, config) ->
+  constructor: (options, dependencies) ->
+    Match.check dependencies,
+      swf: AWS.SWF
+      logger: winston.Logger
     _.extend @, options
-    Match.check config,
-      accessKeyId: String
-      secretAccessKey: String
-      region: String
-    @swf = Promise.promisifyAll new AWS.SWF _.extend
-      apiVersion: "2012-01-25"
-    , config
+    _.extend @, dependencies
 
 module.exports = Actor

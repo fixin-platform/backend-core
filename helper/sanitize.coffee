@@ -1,0 +1,12 @@
+module.exports = (object, sanitizedProperties) ->
+  object = _.clone(object)
+  if _.isObject(object)
+    for key, value of object
+      if key in sanitizedProperties
+        delete object[key]
+      else
+        object[key] = sanitize(value)
+  else if _.isArray(object)
+    for element, i in object
+      object[i] = sanitize(element)
+  object
