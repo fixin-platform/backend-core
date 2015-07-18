@@ -1,50 +1,34 @@
 #!/usr/bin/env coffee
 
-# require paths, check instanceof, call register (v1), ok or expected error = ok, set options (which might have changed)
-
 path = require "path"
 parse = require "path-parse"
 yargs = require "yargs"
 domain = require "domain"
 Registrar = require "../lib/Actor/Registrar"
+createLogger = require "../helper/logger"
+createSWF = require "../helper/swf"
 
 argv = yargs
-.usage('Usage: $0 [options] pathToClass1 ... pathToClassN')
-.options(
-  "c":
-    alias: "config"
-    type: "config"
-    demand: true
-)
-.demand(1)
-.argv
+  .usage('Usage: $0 [options] definitionsPath')
+  .options(
+    "c":
+      alias: "config"
+      type: "string"
+      description: "Config for dependencies (SWF binding, logger, etc)"
+      demand: true
+  )
+  .demand(1)
+  .strict()
+  .argv
 
-classes = {}
-for classPath in argv._
-  name = parse(classPath).name
-  classes[name] = require path.resolve(process.cwd(), classPath)
+config = require path.resolve(process.cwd(), argv.config)
 
-registrar = new Registrar(
-  classes: classes
-  config: argv.config
-)
+options = require path.resolve(process.cwd(), argv._[0])
 
-shutdown = (exitCode) ->
-  registrar.exitCode = exitCode
-  registrar.stop()
+registrar = new Registrar options,
+  logger: createLogger(config.logger)
+  swf: createSWF(config.swf)
 
-(require "death")() # handle SIGINT, SIGQUIT, SIGTERM, return normal exit code (signal probably sent by admin)
+registrar.registerAll()
 
-registrar.on "stop", ->
-  process.exit(registrar.exitCode) # only exit after we have closed the sockets, etc
-
-registrar.on "error", (msg) ->
-  console.error(msg)
-  switch msg
-    when "ERR_MSG_TYPE_INVALID", "ERR_MSG_HEADER" # internal worker errors
-# winter is coming... but don't shutdown just yet
-    else
-      shutdown(1) # something really bad happened, let's shutdown
-
-
-registrar.start("vodka") # hope it helps
+(require "death")(->) # SIGINT, SIGTERM, SIGQUIT, amen
