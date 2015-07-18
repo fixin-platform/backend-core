@@ -5,7 +5,7 @@ Actor = require "../Actor"
 
 class Registrar extends Actor
   constructor: (options, dependencies) ->
-    Match.check options,git 
+    Match.check options,
       domains: [Object]
       workflowTypes: [Object]
       activityTypes: [Object]
