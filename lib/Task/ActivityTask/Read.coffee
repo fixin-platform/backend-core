@@ -1,5 +1,5 @@
-Job = require "../Job"
+ActivityTask = require "../ActivityTask"
 
-class Read extends Job
+class Read extends ActivityTask
 
 module.exports = Read

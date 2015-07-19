@@ -1,11 +1,11 @@
 _ = require "underscore"
 stream = require "readable-stream"
 Match = require "mtr-match"
-Job = require "../Job"
+ActivityTask = require "../ActivityTask"
 Read = require "./Read"
 Save = require "./Save"
 
-class Download extends Job
+class Download extends ActivityTask
   constructor: (options) ->
     Match.check options, Match.ObjectIncluding
       read: Read

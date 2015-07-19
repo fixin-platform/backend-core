@@ -1,8 +1,8 @@
 _ = require "underscore"
-Job = require "../Job"
+ActivityTask = require "../ActivityTask"
 Match = require "mtr-match"
 
-class Save extends Job
+class Save extends ActivityTask
   constructor: (options) ->
     Match.check(options, Match.ObjectIncluding
       bookshelf: Object
