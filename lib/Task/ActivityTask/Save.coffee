@@ -6,7 +6,7 @@ class Save extends ActivityTask
   constructor: (options) ->
     Match.check(options, Match.ObjectIncluding
       bookshelf: Object
-      avatarId: Number
+      avatarId: String
     )
     super
     @knex = @bookshelf.knex
