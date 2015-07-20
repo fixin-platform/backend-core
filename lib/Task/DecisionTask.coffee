@@ -10,18 +10,23 @@ class DecisionTask extends Task
       events: [Object]
     super
   execute: ->
-    @decisions = []
-    @modifier = {}
-    for event in @events
-      if @[event.eventType]
-        @[event.eventType](event)
-      else
-        throw new errors.EventHandlerNotImplementedError
-          message: "Event handler '#{event.eventType}' not implemented"
-          event: event
-    if not @decisions.length
-      throw new errors.NoDecisionsError
-        event: event
+    new Promise (resolve, reject) =>
+      try
+        @decisions = []
+        @modifier = {}
+        for event in @events
+          if @[event.eventType]
+            @[event.eventType](event)
+          else
+            throw new errors.EventHandlerNotImplementedError
+              message: "Event handler '#{event.eventType}' not implemented"
+              event: event
+        if not @decisions.length
+          throw new errors.NoDecisionsError
+            event: event
+      catch error
+        reject error
+      resolve()
   # default noops, can be implemented by child class if necessary
   DecisionTaskScheduled: (event) ->
   DecisionTaskStarted: (event) ->
