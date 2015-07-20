@@ -5,11 +5,20 @@ class Serializer
   constructor: (options) ->
     Match.check options, Match.ObjectIncluding
       model: Function
-    _.extend(@, options)
+    _.extend @, options
+    _.defaults @,
+      keymap = @keymap()
+      key:
+        toInternal: _.compose @dereference.bind(@, keymap)
+        toExternal: _.compose @dereference.bind(@, _.invert keymap)
+      values: @forJSONResponse()
 
   toInternal: (externalObject) -> @transform(externalObject, "toInternal")
 
   toExternal: (internalObject) -> @transform(internalObject, "toExternal")
+
+  keymap: ->
+    "id": "_uid"
 
   forJSONResponse: ->
     transformers = {}

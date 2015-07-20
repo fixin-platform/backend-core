@@ -49,11 +49,8 @@ class UpsertThroughTemporaryTable extends Save
 
   insert: (trx, externalObject) ->
     instance = new @temporaryModel(@serializer.toInternal(externalObject))
-    instance.set("avatarId", @avatarId)
+    instance.set("_avatarId", @avatarId)
     instance.save(null, {transacting: trx})
-#    backendCreatedAt: new Date()
-#    backendUpdatedAt: new Date()
-#    @knex.insert(object).into(@bufferTableName)
 
   save: (trx) ->
       Promise.bind(@)
@@ -66,14 +63,14 @@ class UpsertThroughTemporaryTable extends Save
               UPDATE "#{@model::tableName}" AS storage
               SET #{@getUpdateColumns("buffer")}
               FROM "#{@bufferTableName}" AS buffer
-              WHERE storage."uid" = buffer."uid" AND storage."avatarId" = buffer."avatarId"
+              WHERE storage."id" = buffer."id" AND storage."_avatarId" = buffer."_avatarId"
             """)
       .then ->
         trx.raw("""
               INSERT INTO "#{@model::tableName}"
               SELECT buffer.*
               FROM "#{@bufferTableName}" AS buffer
-              LEFT OUTER JOIN "#{@model::tableName}" as storage ON (buffer."uid" = storage."uid" AND buffer."avatarId" = storage."avatarId")
+              LEFT OUTER JOIN "#{@model::tableName}" as storage ON (buffer."id" = storage."id" AND buffer."_avatarId" = storage."_avatarId")
               WHERE storage."id" IS NULL
             """)
 #      .then ->
