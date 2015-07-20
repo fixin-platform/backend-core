@@ -6,7 +6,7 @@ errors = require "../../helper/errors"
 Task = require "../Task"
 
 class DecisionTask extends Task
-  constructor: (options) ->
+  constructor: (options, dependencies) ->
     Match.check options, Match.ObjectIncluding
       events: [Object]
     super

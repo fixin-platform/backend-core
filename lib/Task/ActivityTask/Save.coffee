@@ -3,11 +3,11 @@ ActivityTask = require "../ActivityTask"
 Match = require "mtr-match"
 
 class Save extends ActivityTask
-  constructor: (options) ->
-    Match.check(options, Match.ObjectIncluding
-      bookshelf: Object
+  constructor: (options, dependencies) ->
+    Match.check options, Match.ObjectIncluding
       avatarId: String
-    )
+    Match.check dependencies, Match.ObjectIncluding
+      bookshelf: Object
     super
     @knex = @bookshelf.knex
     @model = @createModel()
