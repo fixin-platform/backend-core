@@ -14,7 +14,7 @@ class UpsertThroughTemporaryTable extends Save
     @temporaryModel = @createModel()
     @temporaryModel::tableName = @bufferTableName
 
-  run: ->
+  execute: ->
     inserts = []
     @knex.transaction (trx) =>
       Promise.bind(@)

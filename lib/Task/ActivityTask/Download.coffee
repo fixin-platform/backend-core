@@ -1,4 +1,5 @@
 _ = require "underscore"
+Promise = require "bluebird"
 stream = require "readable-stream"
 Match = require "mtr-match"
 ActivityTask = require "../ActivityTask"
@@ -12,8 +13,7 @@ class Download extends ActivityTask
       save: Save
     super
     @save.input = @read.output = new stream.PassThrough({objectMode: true})
-  run: ->
-    @read.run()
-    @save.run()
+  execute: ->
+    Promise.join(@read.execute(), @save.execute())
 
 module.exports = Download
