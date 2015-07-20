@@ -19,7 +19,6 @@ class DecisionTask extends Task
         for event in @events
           if @[event.eventType]
             attributes = camelize(event.eventType, true) + "EventAttributes"
-            console.log attributes
             input = JSON.parse event[attributes].input if event[attributes].input
             @[event.eventType](event, event[attributes], input)
           else
