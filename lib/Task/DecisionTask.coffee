@@ -48,9 +48,13 @@ class DecisionTask extends Task
   # workflow helpers
   createBarrier: (name, obstacles) ->
     @barriers[name] = obstacles
-  removeBarrierObstacle: (name, obstacle) ->
-    @barriers[name] = _.without @barriers[name], obstacle
-  isBarrierPassed: (name) ->
-    not @barriers[name].length
+  removeObstacle: (obstacle) ->
+    for name, barrier of @barriers
+      index = barrier.indexOf(obstacle)
+      if ~index
+        barrier.splice(index, 1)
+        if not barrier.length and not barrier.isPassed
+          barrier.isPassed = true
+          @["#{name}BarrierPassed"]()
 
 module.exports = DecisionTask
