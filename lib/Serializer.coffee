@@ -17,7 +17,8 @@ class Serializer
 
   toExternal: (internalObject) -> @transform(internalObject, "toExternal")
 
-  keymap: -> throw "Implement me! At the very least, I need the mapping between external object id field and our _uid field"
+  # an external object identifier field may be called "id", which conflicts with our PostgreSQL "id" field
+  keymap: -> throw "Implement me! At the very least, map the external object identifier field and internal object _uid field"
 
   forJSONResponse: ->
     transformers = {}
