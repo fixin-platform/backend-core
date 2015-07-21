@@ -11,8 +11,8 @@ class ActivityTask extends Task
     super
   execute: -> throw new Error("Implement me!")
   # temp progress stubs
-  progressInit: (total) ->Promise.resolve()
-  progressInc: (inc) -> Promise.resolve()
+  progressInit: (total) -> Promise.resolve().thenReturn(total)
+  progressInc: (inc) -> Promise.resolve().thenReturn(inc)
   progressFinish: -> Promise.resolve()
 
 module.exports = ActivityTask
