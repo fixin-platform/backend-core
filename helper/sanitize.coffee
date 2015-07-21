@@ -1,6 +1,6 @@
 _ = require "underscore"
 
-sanitize = (object, sanitizedProperties) ->
+sanitize = (object, sanitizedProperties = ["credentials", "accessToken", "refreshToken"]) ->
   object = _.clone(object)
   if _.isObject(object)
     for key, value of object

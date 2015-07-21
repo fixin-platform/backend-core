@@ -10,5 +10,9 @@ class ActivityTask extends Task
       output: Match.Where (stream) -> Match.test(stream.write, Function) # stream.Writable or stream.Duplex
     super
   execute: -> throw new Error("Implement me!")
+  # temp progress stubs
+  progressInit: (total) ->Promise.resolve()
+  progressInc: (inc) -> Promise.resolve()
+  progressFinish: -> Promise.resolve()
 
 module.exports = ActivityTask
