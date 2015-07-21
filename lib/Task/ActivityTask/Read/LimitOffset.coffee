@@ -21,7 +21,7 @@ class LimitOffset extends Read
     .then @progressInit
     .then @readChapter
     .all()
-    .then -> @output.end()
+    .then -> @out.end()
 
   readChapter: (total) ->
     offset = @offset
@@ -45,7 +45,7 @@ class LimitOffset extends Read
     @getPageRequest(params).bind(@)
     .spread (response, body) ->
       @info "LimitOffset:readPageResponse", @details({params: params, response: response.toJSON(), body: body})
-      @output.write(object) for object in body
+      @out.write(object) for object in body
       [response, body]
 
 module.exports = LimitOffset

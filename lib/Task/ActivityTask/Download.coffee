@@ -11,7 +11,7 @@ class Download extends ActivityTask
     Match.check dependencies, Match.ObjectIncluding
       read: Read
       save: Save
-    dependencies.save.input = dependencies.read.output = new stream.PassThrough({objectMode: true})
+    dependencies.save.in = dependencies.read.out = new stream.PassThrough({objectMode: true})
     super
 
   execute: ->

@@ -32,7 +32,7 @@ class OptimisticLookahead extends Read
     )
   end: ->
     Promise.all(@chapterPromises).bind(@)
-    .then -> @output.end()
+    .then -> @out.end()
     .then @resolve
     return null # break infinite loop
   jumpToChapter: (chapterStart) ->
@@ -43,7 +43,7 @@ class OptimisticLookahead extends Read
   readPage: (page) ->
     @getPage(page).bind(@)
     .spread (response, body) ->
-      @output.write(object) for object in body
+      @out.write(object) for object in body
       [response, body]
   shouldReadNextChapter: (response, body) -> throw new Error("Implement me!")
   getPage: (page) -> throw new Error("Implement me!")

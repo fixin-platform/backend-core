@@ -20,18 +20,18 @@ class UpsertThroughTemporaryTable extends Save
       .then -> @init(trx)
       .then ->
         new Promise (resolve, reject) =>
-          @input.on "readable", =>
-            while (object = @input.read()) isnt null # result may also be false, so we can't write `while (result = @input.read())`
+          @in.on "readable", =>
+            while (object = @in.read()) isnt null # result may also be false, so we can't write `while (result = @in.read())`
               inserts.push @insert(trx, object) if object
             true
-          @input.on "end", -> resolve(inserts)
-          @input.on "error", reject
+          @in.on "end", -> resolve(inserts)
+          @in.on "error", reject
       .all() # wait for objects to be inserted
       .then -> @save(trx)
       .then ->
-        @output.write({count: inserts.length})
-        @output.write(false)
-        @output.end()
+        @out.write({count: inserts.length})
+        @out.write(false)
+        @out.end()
 
   
   init: (trx) ->
