@@ -17,8 +17,7 @@ class Serializer
 
   toExternal: (internalObject) -> @transform(internalObject, "toExternal")
 
-  keymap: ->
-    "id": "_uid"
+  keymap: -> throw "Implement me! At the very least, I need the mapping between external object id field and our _uid field"
 
   forJSONResponse: ->
     transformers = {}
