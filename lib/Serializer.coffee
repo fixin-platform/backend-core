@@ -1,5 +1,6 @@
 _ = require "underscore"
 Match = require "mtr-match"
+moment = require "moment"
 
 class Serializer
   constructor: (options) ->
@@ -18,15 +19,15 @@ class Serializer
   toExternal: (internalObject) -> @transform(internalObject, "toExternal")
 
   # an external object identifier field may be called "id", which conflicts with our PostgreSQL "id" field
-  keymap: -> throw "Implement me! At the very least, map the external object identifier field and internal object _uid field"
+  keymap: -> throw new Error("Implement me! At the very least, map the external object identifier field and internal object _uid field")
 
   forJSONResponse: ->
     transformers = {}
     for column in @model.getColumns()
       if column.getColumnType() is "timestamptz"
         transformers[column.getColumnName()] =
-          toInternal: @toDate
-          toExternal: @fromDate
+          toInternal: @toDate.bind(@)
+          toExternal: @fromDate.bind(@)
     transformers
 
   transform: (source, direction) ->
@@ -40,7 +41,8 @@ class Serializer
 
   dereference: (keymap, name) -> keymap[name] or name
 
-  toDate: (value) -> new Date(value)
-  fromDate: (value) -> value.toISOString()
+  toDate: (value) -> moment(value, @dateFormat()).toDate()
+  fromDate: (value) -> moment(value).format(@dateFormat())
+  dateFormat: -> throw new Error("Implement me!")
 
 module.exports = Serializer
