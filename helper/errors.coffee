@@ -3,6 +3,12 @@ errors = require "errors"
 errors.stacks true
 
 errors.create
+  name: "NotImplementedError"
+  defaultMessage: "This method is not implemented"
+  defaultExplanation: "The method is intended to be implemented by child classes"
+  defaultResponse: "Go implement the method already"
+
+errors.create
   name: "EventHandlerNotImplementedError"
   defaultExplanation: "The implementor of this decision task hasn't anticipated such event type"
   defaultResponse: "Find out who implemented this decision task via `git log` and talk to him - OR - figure it out yourself"
