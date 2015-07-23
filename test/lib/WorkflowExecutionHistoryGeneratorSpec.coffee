@@ -53,7 +53,7 @@ describe "Generate3DCartOrdersByFreshdeskUserIdCollection", ->
   describe "features", ->
 
     it "should support event lookups", ->
-      generator.init -> [
+      generator.seed -> [
         events: [
           @WorkflowExecutionStarted
             chunks: [
@@ -85,7 +85,7 @@ describe "Generate3DCartOrdersByFreshdeskUserIdCollection", ->
   describe "histories", ->
 
     it "should generate simple history", ->
-      generator.init -> [
+      generator.seed -> [
         events: [
           @WorkflowExecutionStarted
             chunks: [
@@ -136,7 +136,7 @@ describe "Generate3DCartOrdersByFreshdeskUserIdCollection", ->
       ]
 
   it "should run complex history", ->
-    generator.init -> [
+    generator.seed -> [
       events: [@WorkflowExecutionStarted
                  "FreshdeskDownloadUsers":
                    avatarId: "D6vpAkoHyBXPadp4c"

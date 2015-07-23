@@ -15,7 +15,7 @@ class DecisionTask extends Task
       try
         @barriers = {}
         @decisions = []
-        @modifier = {}
+        @modifiers = []
         for event in @events
           if @[event.eventType]
             attributes = camelize(event.eventType, true) + "EventAttributes"

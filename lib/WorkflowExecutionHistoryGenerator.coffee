@@ -13,8 +13,8 @@ class WorkflowExecutionHistoryGenerator
       eventTimestampInitial: 1420000000.123 # seconds, not milliseconds
       eventTimestampIncrement: 1
       tree: {}
-  init: (initializer) ->
-    @tree = initializer.call(@)
+  seed: (planter) ->
+    @tree = planter.call(@)
     Match.check @tree, [Object]
   histories: ->
     histories = []
@@ -71,17 +71,12 @@ class WorkflowExecutionHistoryGenerator
       mappings = @remappedEventTypes[event.eventType] or []
       for mapping in mappings
         parentEvent = _.find nextEventsWithDecisionEvents, (parentEvent) -> opath.get(parentEvent, mapping.fromMatchField) is opath.get(event, mapping.toMatchField)
-        unless parentEvent
-          console.log event
-          console.log mapping
-          console.log nextEventsWithDecisionEvents
         throw new errors.RuntimeError(
           message: "Couldn't find parent event using mapping"
           mapping: mapping
           event: event
         ) unless parentEvent
         opath.set(event, mapping.toField, opath.get(parentEvent, mapping.fromField))
-        opath.del(event, mapping.fromMatchField)
     for branch in root.branches or []
       histories = histories.concat @trace(branch, nextEventsWithDecisionEvents)
     histories
@@ -259,7 +254,7 @@ class WorkflowExecutionHistoryGenerator
       , attributes
     ,
       _.extend
-        decisionType: "CompleteWorkflowExecution"
+        decisionType: "FailWorkflowExecution"
       , options
     )
 
