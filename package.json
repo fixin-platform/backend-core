@@ -1,0 +1,36 @@
+{
+  "name": "fixin-core",
+  "version": "1.0.0",
+  "description": "Core backend for Fixin platform",
+  "readme": "README.md",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:fixin-platform/backend-core.git"
+  },
+  "author": "Denis Gorbachev <denis.d.gorbachev@gmail.com>",
+  "license": "AGPLv3",
+  "homepage": "https://github.com/fixin-platform/backend-core",
+  "devDependencies": {
+    "chai": "^3.0.0",
+    "chai-as-promised": "^5.1.0",
+    "chai-things": "^0.2.0",
+    "coffee-script": "^1.9.3",
+    "mocha": "=2.1.0",
+    "sinon": "^1.15.4",
+    "sinon-chai": "^2.8.0"
+  },
+  "dependencies": {
+    "moment": "^2.10.3",
+    "mtr-match": "0.0.4",
+    "typecast": "0.0.1",
+    "underscore": "^1.8.3",
+    "underscore.deep": "^0.5.1",
+    "underscore.string": "^3.1.1"
+  }
+}
