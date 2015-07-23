@@ -3,6 +3,9 @@ errors = require "errors"
 errors.stacks true
 
 errors.create
+  name: "RuntimeError"
+
+errors.create
   name: "NotImplementedError"
   defaultMessage: "This method is not implemented"
   defaultExplanation: "The method is intended to be implemented by child classes"
