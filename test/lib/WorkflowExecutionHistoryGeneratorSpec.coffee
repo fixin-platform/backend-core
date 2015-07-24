@@ -196,3 +196,8 @@ describe "WorkflowExecutionHistoryGenerator", ->
     histories = generator.histories()
     histories.should.be.an("array")
     histories.length.should.be.an.equal(7)
+    # events should be different objects with identical properties
+    {}.should.not.be.equal({})
+    {}.should.be.deep.equal({})
+    histories[0].events[0].should.be.deep.equal(histories[1].events[0])
+    histories[0].events[0].should.not.be.equal(histories[1].events[0])

@@ -21,42 +21,15 @@ class WorkflowExecutionHistoryGenerator
     for branch in @tree
       histories = histories.concat @trace(branch, [])
     histories
-  remappedEventTypes:
-    "ActivityTaskStarted": [
-      fromMatchField: "activityTaskScheduledEventAttributes.activityId"
-      toMatchField: "activityTaskStartedEventAttributes.__activityId"
-      fromField: "eventId"
-      toField: "activityTaskStartedEventAttributes.scheduledEventId"
-    ]
-    "ActivityTaskCompleted": [
-      fromMatchField: "activityTaskScheduledEventAttributes.activityId"
-      toMatchField: "activityTaskCompletedEventAttributes.__activityId"
-      fromField: "eventId"
-      toField: "activityTaskCompletedEventAttributes.scheduledEventId"
-    ,
-      fromMatchField: "activityTaskStartedEventAttributes.scheduledEventId"
-      toMatchField: "activityTaskCompletedEventAttributes.scheduledEventId"
-      fromField: "eventId"
-      toField: "activityTaskCompletedEventAttributes.startedEventId"
-    ]
-    "ActivityTaskFailed": [
-      fromMatchField: "activityTaskScheduledEventAttributes.activityId"
-      toMatchField: "activityTaskFailedEventAttributes.__activityId"
-      fromField: "eventId"
-      toField: "activityTaskFailedEventAttributes.scheduledEventId"
-    ,
-      fromMatchField: "activityTaskStartedEventAttributes.scheduledEventId"
-      toMatchField: "activityTaskFailedEventAttributes.scheduledEventId"
-      fromField: "eventId"
-      toField: "activityTaskFailedEventAttributes.startedEventId"
-    ]
   trace: (root, previousEvents) ->
     Match.check root,
       events: [Object]
       decisions: [Object]
       branches: Match.Optional [Object]
-    decisions = _.deepClone root.decisions
     events = _.deepClone root.events
+    decisions = _.deepClone root.decisions
+    branches = _.deepClone root.branches or []
+    previousEvents = _.deepClone previousEvents
     events.push @DecisionTaskScheduled()
     events.push @DecisionTaskStarted()
     nextEvents = @nextEvents events, previousEvents
@@ -77,7 +50,7 @@ class WorkflowExecutionHistoryGenerator
           event: event
         ) unless parentEvent
         opath.set(event, mapping.toField, opath.get(parentEvent, mapping.fromField))
-    for branch in root.branches or []
+    for branch in branches
       histories = histories.concat @trace(branch, nextEventsWithDecisionEvents)
     histories
   decisionsToEvents: (decisions) ->
@@ -257,6 +230,35 @@ class WorkflowExecutionHistoryGenerator
         decisionType: "FailWorkflowExecution"
       , options
     )
+  remappedEventTypes:
+    "ActivityTaskStarted": [
+      fromMatchField: "activityTaskScheduledEventAttributes.activityId"
+      toMatchField: "activityTaskStartedEventAttributes.__activityId"
+      fromField: "eventId"
+      toField: "activityTaskStartedEventAttributes.scheduledEventId"
+    ]
+    "ActivityTaskCompleted": [
+      fromMatchField: "activityTaskScheduledEventAttributes.activityId"
+      toMatchField: "activityTaskCompletedEventAttributes.__activityId"
+      fromField: "eventId"
+      toField: "activityTaskCompletedEventAttributes.scheduledEventId"
+    ,
+      fromMatchField: "activityTaskStartedEventAttributes.scheduledEventId"
+      toMatchField: "activityTaskCompletedEventAttributes.scheduledEventId"
+      fromField: "eventId"
+      toField: "activityTaskCompletedEventAttributes.startedEventId"
+    ]
+    "ActivityTaskFailed": [
+      fromMatchField: "activityTaskScheduledEventAttributes.activityId"
+      toMatchField: "activityTaskFailedEventAttributes.__activityId"
+      fromField: "eventId"
+      toField: "activityTaskFailedEventAttributes.scheduledEventId"
+    ,
+      fromMatchField: "activityTaskStartedEventAttributes.scheduledEventId"
+      toMatchField: "activityTaskFailedEventAttributes.scheduledEventId"
+      fromField: "eventId"
+      toField: "activityTaskFailedEventAttributes.startedEventId"
+    ]
 
 module.exports = WorkflowExecutionHistoryGenerator
 
