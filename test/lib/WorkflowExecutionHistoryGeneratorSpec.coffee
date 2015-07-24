@@ -101,7 +101,7 @@ describe "WorkflowExecutionHistoryGenerator", ->
       histories = generator.histories()
       histories.length.should.be.equal(1)
       histories.should.be.deep.equal [
-        name: 'Hey',
+        name: "WorkflowExecutionStarted -> DecisionTaskScheduled -> DecisionTaskStarted"
         events: [
           eventType: "WorkflowExecutionStarted"
           eventId: 1
