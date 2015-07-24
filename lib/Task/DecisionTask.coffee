@@ -2,6 +2,7 @@ _ = require "underscore"
 camelize = require "underscore.string/camelize"
 Promise = require "bluebird"
 Match = require "mtr-match"
+opath = require "object-path"
 errors = require "../../helper/errors"
 Task = require "../Task"
 
@@ -10,6 +11,7 @@ class DecisionTask extends Task
     Match.check options, Match.ObjectIncluding
       events: [Object]
     super
+  signature: -> ["taskToken", "workflowExecution", "workflowType"]
   execute: ->
     new Promise (resolve, reject) =>
       try
@@ -19,8 +21,10 @@ class DecisionTask extends Task
         for event in @events
           if @[event.eventType]
             attributes = camelize(event.eventType, true) + "EventAttributes"
-            input = JSON.parse event[attributes].input if event[attributes].input
-            @[event.eventType](event, event[attributes], input)
+            event[attributes].input = JSON.parse event[attributes].input if event[attributes].input
+            event[attributes].result = JSON.parse event[attributes].result if event[attributes].result
+            @info "DecisionTask:processEvent", @details({event: event})
+            @[event.eventType](event, event[attributes], event[attributes].input or event[attributes].result)
           else
             throw new errors.EventHandlerNotImplementedError
               message: "Event handler '#{event.eventType}' not implemented"
@@ -37,15 +41,35 @@ class DecisionTask extends Task
   DecisionTaskCompleted: (event) ->
   ActivityTaskStarted: (event) ->
   # default decisions
-  ScheduleActivityTask: (activityTypeName, input) ->
+  ScheduleActivityTask: (activityShorthand, input) ->
     decisionType: "ScheduleActivityTask"
     scheduleActivityTaskDecisionAttributes:
       activityType:
-        name: activityTypeName
+        name: activityShorthand
         version: "1.0.0"
-      activityId: activityTypeName
+      activityId: activityShorthand
       input: JSON.stringify input
   # workflow helpers
+  addDecision: (decision) ->
+    @decisions.push decision
+  removeDecision: (decisionType, query) ->
+    index = _.findIndex @decisions, (decision) ->
+      console.log decision.decisionType, decisionType
+      return false unless decision.decisionType is decisionType
+      for path, value of query
+        console.log opath.get(decision, path)
+        return false unless opath.get(decision, path) is value
+      console.log true
+      return true
+    console.log index
+    throw new errors.RuntimeError(
+      message: "Can't find \"#{decisionType}\" decision to remove"
+      query: query
+    ) if not ~index
+    @decisions.splice(index, 1)
+  removeScheduleActivityTaskDecision: (activityId) ->
+    @removeDecision "ScheduleActivityTask",
+      "scheduleActivityTaskDecisionAttributes.activityId": activityId
   createBarrier: (name, obstacles) ->
     @barriers[name] = obstacles
   removeObstacle: (obstacle) ->

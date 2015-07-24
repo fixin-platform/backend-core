@@ -35,7 +35,7 @@ class WorkflowExecutionHistoryGenerator
     nextEvents = @nextEvents events, previousEvents
     histories = []
     histories.push
-      name: "Hey"
+      name: _.pluck(nextEvents, "eventType").join(" -> ")
       events: nextEvents
       decisions: decisions
     decisionEvents = @decisionsToEvents(decisions)
