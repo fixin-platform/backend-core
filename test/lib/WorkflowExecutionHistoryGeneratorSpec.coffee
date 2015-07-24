@@ -72,7 +72,6 @@ describe "WorkflowExecutionHistoryGenerator", ->
       ]
       histories = generator.histories()
       histories.length.should.be.equal(2)
-      console.log histories[1].events
       histories[0].events.length.should.be.equal(1 + 2)
       histories[1].events.length.should.be.equal(1 + 2 + 1 + 2 + 1 + 2)
       histories[1].events[4].eventType.should.be.equal("ActivityTaskScheduled")
