@@ -3,7 +3,7 @@ Promise = require "bluebird"
 
 WorkflowExecutionHistoryGenerator = require "../../lib/WorkflowExecutionHistoryGenerator"
 
-describe "Generate3DCartOrdersByFreshdeskUserIdCollection", ->
+describe "WorkflowExecutionHistoryGenerator", ->
   generator = null;
 
   before ->
@@ -166,14 +166,14 @@ describe "Generate3DCartOrdersByFreshdeskUserIdCollection", ->
           @ActivityTaskCompleted "3DCartDownloadOrders"
         ]
         decisions: [
-          @ScheduleActivityTask "BellefitGenerate3DCartOrdersByFreshdeskUserIdCollectionComplete",
+          @ScheduleActivityTask "BellefitGenerate3DCartOrdersByFreshdeskUserIdCollection",
             avatarIds:
               "Freshdesk": "D6vpAkoHyBXPadp4c"
               "3DCart": "T7JwArn9vCJLiKXbn"
         ]
         branches: [
           events: [
-            @ActivityTaskCompleted "BellefitGenerate3DCartOrdersByFreshdeskUserIdCollectionComplete"
+            @ActivityTaskCompleted "BellefitGenerate3DCartOrdersByFreshdeskUserIdCollection"
           ]
           decisions: [
             @CompleteWorkflowExecution()
