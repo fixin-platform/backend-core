@@ -20,18 +20,15 @@ class DecisionTask extends Task
         @modifiers = []
         for event in @events
           if @[event.eventType]
-            attributes = camelize(event.eventType, true) + "EventAttributes"
-            event[attributes].input = JSON.parse event[attributes].input if event[attributes].input
-            event[attributes].result = JSON.parse event[attributes].result if event[attributes].result
+            attributes = @eventAttributes(event)
+            attributes.input = JSON.parse attributes.input if attributes.input
+            attributes.result = JSON.parse attributes.result if attributes.result
             @info "DecisionTask:processEvent", @details({event: event})
-            @[event.eventType](event, event[attributes], event[attributes].input or event[attributes].result)
+            @[event.eventType](event, attributes, attributes.input or attributes.result)
           else
             throw new errors.EventHandlerNotImplementedError
               message: "Event handler '#{event.eventType}' not implemented"
               event: event
-        if not @decisions.length
-          throw new errors.NoDecisionsError
-            event: event
       catch error
         reject error
       resolve()
@@ -53,20 +50,27 @@ class DecisionTask extends Task
   addDecision: (decision) ->
     @decisions.push decision
   removeDecision: (decisionType, query) ->
-    index = _.findIndex @decisions, (decision) ->
-      console.log decision.decisionType, decisionType
-      return false unless decision.decisionType is decisionType
-      for path, value of query
-        console.log opath.get(decision, path)
-        return false unless opath.get(decision, path) is value
-      console.log true
-      return true
-    console.log index
+    index = @findIndex @decisions, _.extend
+      decisionType: decisionType
+    , query
     throw new errors.RuntimeError(
       message: "Can't find \"#{decisionType}\" decision to remove"
       query: query
     ) if not ~index
     @decisions.splice(index, 1)
+  findIndex: (array, query) ->
+    _.findIndex array, (element) ->
+      for path, value of query
+        return false unless opath.get(element, path) is value
+      return true
+  find: (array, query) ->
+    index = @findIndex array, query
+    array[index] if ~index
+  attributesProperty: (name, suffix) -> camelize(name, true) + suffix
+  eventAttributesProperty: (event) -> @attributesProperty(event.eventType, "EventAttributes")
+  decisionAttributesProperty: (decision) -> @attributesProperty(decision.decisionType, "DecisionAttributes")
+  eventAttributes: (event) -> event[@eventAttributesProperty(event)]
+  decisionAttributes: (decision) -> decision[@decisionAttributesProperty(decision)]
   removeScheduleActivityTaskDecision: (activityId) ->
     @removeDecision "ScheduleActivityTask",
       "scheduleActivityTaskDecisionAttributes.activityId": activityId
