@@ -26,6 +26,7 @@
     "sinon-chai": "^2.8.0"
   },
   "dependencies": {
+    "moment": "^2.10.3",
     "aws-sdk": "^2.1.39",
     "errors": "^0.3.0",
     "promised-mongo": "^1.2.0",
@@ -34,7 +35,7 @@
     "pg": "^4.4.0",
     "winston": "^1.0.1",
     "winston-loggly": "^1.1.0",
-    "moment": "^2.10.3",
+    "path-parse": "^1.0.5",
     "mtr-match": "0.0.4",
     "object-path": "^0.9.2",
     "typecast": "0.0.1",
