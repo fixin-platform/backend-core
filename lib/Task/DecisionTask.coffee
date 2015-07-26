@@ -20,11 +20,11 @@ class DecisionTask extends Task
         @modifiers = []
         for event in @events
           if @[event.eventType]
-            attributes = @eventAttributes(event)
-            attributes.input = JSON.parse attributes.input if attributes.input
-            attributes.result = JSON.parse attributes.result if attributes.result
+            attributes = _.deepClone @eventAttributes(event)
+            input = (JSON.parse attributes.input if attributes.input) or undefined
+            result = (JSON.parse attributes.result if attributes.result) or undefined
             @info "DecisionTask:processEvent", @details({event: event})
-            @[event.eventType](event, attributes, attributes.input or attributes.result)
+            @[event.eventType](event, attributes, input or result)
           else
             throw new errors.EventHandlerNotImplementedError
               message: "Event handler '#{event.eventType}' not implemented"
