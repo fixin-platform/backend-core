@@ -137,24 +137,24 @@ describe "WorkflowExecutionHistoryGenerator", ->
   it "should run complex history", ->
     generator.seed -> [
       events: [@WorkflowExecutionStarted
-                 "FreshdeskDownloadUsers":
-                   avatarId: "D6vpAkoHyBXPadp4c"
-                   params: {}
-                 "3DCartDownloadOrders":
-                   avatarId: "T7JwArn9vCJLiKXbn"
-                   baseUrl: "http://store.bellefit.com"
-                   params: {}
-                 "BellefitGenerate3DCartOrdersByFreshdeskUserIdCollection":
-                   avatarIds:
-                     "Freshdesk": "D6vpAkoHyBXPadp4c"
-                     "3DCart": "T7JwArn9vCJLiKXbn"
+         FreshdeskDownloadUsers:
+           avatarId: "D6vpAkoHyBXPadp4c"
+           params: {}
+         _3DCartDownloadOrders:
+           avatarId: "T7JwArn9vCJLiKXbn"
+           baseUrl: "http://store.bellefit.com"
+           params: {}
+         BellefitGenerate3DCartOrdersByFreshdeskUserIdCollection:
+           avatarIds:
+             Freshdesk: "D6vpAkoHyBXPadp4c"
+             _3DCart: "T7JwArn9vCJLiKXbn"
       ]
       decisions: [
         @ScheduleActivityTask "FreshdeskDownloadUsers",
           avatarId: "D6vpAkoHyBXPadp4c"
           params: {}
       ,
-        @ScheduleActivityTask "3DCartDownloadOrders",
+        @ScheduleActivityTask "_3DCartDownloadOrders",
           avatarId: "T7JwArn9vCJLiKXbn"
           params: {}
       ]
@@ -162,13 +162,13 @@ describe "WorkflowExecutionHistoryGenerator", ->
         events: [
           @ActivityTaskCompleted "FreshdeskDownloadUsers"
         ,
-          @ActivityTaskCompleted "3DCartDownloadOrders"
+          @ActivityTaskCompleted "_3DCartDownloadOrders"
         ]
         decisions: [
           @ScheduleActivityTask "BellefitGenerate3DCartOrdersByFreshdeskUserIdCollection",
             avatarIds:
-              "Freshdesk": "D6vpAkoHyBXPadp4c"
-              "3DCart": "T7JwArn9vCJLiKXbn"
+              Freshdesk: "D6vpAkoHyBXPadp4c"
+              _3DCart: "T7JwArn9vCJLiKXbn"
         ]
         branches: [
           events: [
@@ -181,13 +181,13 @@ describe "WorkflowExecutionHistoryGenerator", ->
           events: [@ActivityTaskCompleted "FreshdeskDownloadUsers"]
           decisions: []
         ,
-          events: [@ActivityTaskCompleted "3DCartDownloadOrders"]
+          events: [@ActivityTaskCompleted "_3DCartDownloadOrders"]
           decisions: []
         ,
           events: [@ActivityTaskFailed "FreshdeskDownloadUsers"]
           decisions: [@FailWorkflowExecution()]
         ,
-          events: [@ActivityTaskFailed "3DCartDownloadOrders"]
+          events: [@ActivityTaskFailed "_3DCartDownloadOrders"]
           decisions: [@FailWorkflowExecution()]
         ]
       ]
