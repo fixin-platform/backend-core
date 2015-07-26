@@ -1,4 +1,5 @@
 _ = require "underscore"
+_.mixin require "underscore.deep"
 camelize = require "underscore.string/camelize"
 Promise = require "bluebird"
 Match = require "mtr-match"

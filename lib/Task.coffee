@@ -1,12 +1,11 @@
 _ = require "underscore"
 Promise = require "bluebird"
 Match = require "mtr-match"
-winston = require "winston"
 
 class Task
   constructor: (options, dependencies) ->
     Match.check dependencies, Match.ObjectIncluding
-      logger: winston.Logger
+      logger: Match.Any
     _.extend @, options, dependencies
     log = @
     dependencies.logger.extend @
