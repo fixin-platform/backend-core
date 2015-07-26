@@ -144,7 +144,7 @@ describe "WorkflowExecutionHistoryGenerator", ->
            avatarId: "T7JwArn9vCJLiKXbn"
            baseUrl: "http://store.bellefit.com"
            params: {}
-         BellefitGenerate3DCartOrdersByFreshdeskUserIdCollection:
+         BellefitGenerate_3DCartOrdersByFreshdeskUserIdCollection:
            avatarIds:
              Freshdesk: "D6vpAkoHyBXPadp4c"
              _3DCart: "T7JwArn9vCJLiKXbn"
@@ -165,14 +165,14 @@ describe "WorkflowExecutionHistoryGenerator", ->
           @ActivityTaskCompleted "_3DCartDownloadOrders"
         ]
         decisions: [
-          @ScheduleActivityTask "BellefitGenerate3DCartOrdersByFreshdeskUserIdCollection",
+          @ScheduleActivityTask "BellefitGenerate_3DCartOrdersByFreshdeskUserIdCollection",
             avatarIds:
               Freshdesk: "D6vpAkoHyBXPadp4c"
               _3DCart: "T7JwArn9vCJLiKXbn"
         ]
         branches: [
           events: [
-            @ActivityTaskCompleted "BellefitGenerate3DCartOrdersByFreshdeskUserIdCollection"
+            @ActivityTaskCompleted "BellefitGenerate_3DCartOrdersByFreshdeskUserIdCollection"
           ]
           decisions: [
             @CompleteWorkflowExecution()
