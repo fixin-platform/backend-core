@@ -41,7 +41,7 @@ function getLocalWallaby() {
   var local = {};
   try {
     local = require("./wallaby.local");
-    delete local.bootstrap; // explicitly called inside global boostrap (defined in this file)
+    delete local.bootstrap; // explicitly called inside global bootstrap (defined in this file)
   } catch (error) {
     if (error.code !== "MODULE_NOT_FOUND") { // unexpected!
       throw error;
