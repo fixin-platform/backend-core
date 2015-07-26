@@ -7,7 +7,7 @@ Read = require "./Read"
 Save = require "./Save"
 
 class Download extends ActivityTask
-  constructor: (options, dependencies) ->
+  constructor: (input, options, dependencies) ->
     Match.check dependencies, Match.ObjectIncluding
       read: Read
       save: Save

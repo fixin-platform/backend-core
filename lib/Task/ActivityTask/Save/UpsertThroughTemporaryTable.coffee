@@ -4,10 +4,10 @@ Match = require "mtr-match"
 Save = require "../Save"
 
 class UpsertThroughTemporaryTable extends Save
-  constructor: (options, dependencies) ->
-    _.defaults options,
+  constructor: (input, options, dependencies) ->
+    _.defaults input,
       bufferTableName: "UpsertData"
-    Match.check options, Match.ObjectIncluding
+    Match.check input, Match.ObjectIncluding
       bufferTableName: String
     super
     @temporaryModel = @createModel()

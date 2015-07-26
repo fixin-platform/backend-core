@@ -7,10 +7,10 @@ errors = require "../../helper/errors"
 Task = require "../Task"
 
 class DecisionTask extends Task
-  constructor: (options, dependencies) ->
-    Match.check options, Match.ObjectIncluding
-      events: [Object]
-    super
+  constructor: (events, options, dependencies) ->
+    Match.check events, [Object]
+    super(options, dependencies)
+    @events = events
   signature: -> ["taskToken", "workflowExecution", "workflowType"]
   execute: ->
     new Promise (resolve, reject) =>

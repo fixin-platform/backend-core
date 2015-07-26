@@ -3,8 +3,8 @@ ActivityTask = require "../ActivityTask"
 Match = require "mtr-match"
 
 class Save extends ActivityTask
-  constructor: (options, dependencies) ->
-    Match.check options, Match.ObjectIncluding
+  constructor: (input, options, dependencies) ->
+    Match.check input, Match.ObjectIncluding
       avatarId: String
     Match.check dependencies, Match.ObjectIncluding
       bookshelf: Object
