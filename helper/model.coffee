@@ -3,6 +3,8 @@ module.exports = (bookshelf) ->
     bookshelf.knex.schema.createTable(@::tableName, @buildTable.bind(@))
   dropTable: ->
     bookshelf.knex.schema.dropTable(@::tableName)
+  dropTableIfExists: ->
+    bookshelf.knex.schema.dropTableIfExists(@::tableName)
   getColumns: ->
     client = bookshelf.knex.schema.client
     builder = new client.TableBuilder(client, "create", @::tableName, @buildTable.bind(@))
