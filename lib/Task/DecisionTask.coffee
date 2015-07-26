@@ -1,4 +1,5 @@
 _ = require "underscore"
+_.mixin require "underscore.deep"
 camelize = require "underscore.string/camelize"
 Promise = require "bluebird"
 Match = require "mtr-match"
@@ -7,10 +8,10 @@ errors = require "../../helper/errors"
 Task = require "../Task"
 
 class DecisionTask extends Task
-  constructor: (options, dependencies) ->
-    Match.check options, Match.ObjectIncluding
-      events: [Object]
-    super
+  constructor: (events, options, dependencies) ->
+    Match.check events, [Object]
+    super(options, dependencies)
+    @events = events
   signature: -> ["taskToken", "workflowExecution", "workflowType"]
   execute: ->
     new Promise (resolve, reject) =>
@@ -20,11 +21,11 @@ class DecisionTask extends Task
         @modifiers = []
         for event in @events
           if @[event.eventType]
-            attributes = @eventAttributes(event)
-            attributes.input = JSON.parse attributes.input if attributes.input
-            attributes.result = JSON.parse attributes.result if attributes.result
+            attributes = _.deepClone @eventAttributes(event)
+            input = (JSON.parse attributes.input if attributes.input) or undefined
+            result = (JSON.parse attributes.result if attributes.result) or undefined
             @info "DecisionTask:processEvent", @details({event: event})
-            @[event.eventType](event, attributes, attributes.input or attributes.result)
+            @[event.eventType](event, attributes, input or result)
           else
             throw new errors.EventHandlerNotImplementedError
               message: "Event handler '#{event.eventType}' not implemented"

@@ -3,8 +3,8 @@ Promise = require "bluebird"
 Read = require "../Read"
 
 class OptimisticLookahead extends Read
-  constructor: (options, dependencies) ->
-    _.defaults options,
+  constructor: (input, options, dependencies) ->
+    _.defaults input,
       chapterSize: 10
       chapterStart: 1
     super
