@@ -3,8 +3,8 @@ Promise = require "bluebird"
 Read = require "../Read"
 
 class LimitOffset extends Read
-  constructor: (options, dependencies) ->
-    _.defaults options,
+  constructor: (input, options, dependencies) ->
+    _.defaults input,
       limit: 100
       offset: 0
     super
