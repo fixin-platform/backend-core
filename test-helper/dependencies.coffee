@@ -6,7 +6,6 @@ createMongoDB = require "../helper/mongodb"
 createSWF = require "../helper/swf"
 createLogger = require "../helper/logger"
 
-# Maybe we can refactor the returned object to use getters and initialize dependencies only when the getters are called?
 module.exports = (settings) ->
   dependencies = {settings: settings}
   Object.defineProperties dependencies,
