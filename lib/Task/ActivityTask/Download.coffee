@@ -3,7 +3,7 @@ Promise = require "bluebird"
 stream = require "readable-stream"
 Match = require "mtr-match"
 ActivityTask = require "../ActivityTask"
-Read = require "./Read"
+Read = require "./BindingTask/Read"
 Save = require "./Save"
 
 class Download extends ActivityTask

@@ -9,7 +9,9 @@ class OptimisticLookahead extends Read
       chapterStart: 1
     super
   execute: ->
-    new Promise (resolve, reject) =>
+    Promise.bind(@)
+    .then @acquireCredential
+    .then -> new Promise (resolve, reject) =>
       @reject = reject
       @resolve = resolve
       @chapterPromises = []
@@ -45,6 +47,7 @@ class OptimisticLookahead extends Read
     .spread (response, body) ->
       @out.write(object) for object in body
       [response, body]
+
   shouldReadNextChapter: (response, body) -> throw new Error("Implement me!")
   getPage: (page) -> throw new Error("Implement me!")
 

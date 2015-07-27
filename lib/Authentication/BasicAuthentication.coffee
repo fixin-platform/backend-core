@@ -1,7 +1,7 @@
 _ = require "underscore"
 
-module.exports = (credential, options) ->
-  rawHeaderValue = credential.username + ":" + credential.password
+module.exports = (details, options) ->
+  rawHeaderValue = details.username + ":" + details.password
   encryptedHeaderValue = new Buffer(rawHeaderValue).toString('base64')
   header = "Basic #{encryptedHeaderValue}"
   options.headers ?= {}
