@@ -5,12 +5,11 @@ Match = require "mtr-match"
 ActivityTask = require "../ActivityTask"
 
 class BindingTask extends ActivityTask
-  constructor: (input, options, dependencies) ->
+  constructor: (input, options, streams, dependencies) ->
     Match.check input, Match.ObjectIncluding
       avatarId: String
-    Match.check dependencies, Match.ObjectIncluding
-      mongodb: Match.Any
     super
+    Match.check @mongodb, Match.Any
     @binding = @createBinding()
 
   acquireCredential: ->

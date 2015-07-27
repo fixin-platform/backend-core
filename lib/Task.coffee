@@ -4,11 +4,12 @@ Match = require "mtr-match"
 
 class Task
   constructor: (options, dependencies) ->
-    Match.check dependencies, Match.ObjectIncluding
-      logger: Match.Any
-    _.extend @, options, dependencies
-    log = @
-    dependencies.logger.extend @
+    _.extend @, options
+    for name in Object.getOwnPropertyNames(dependencies)
+      @[name] = dependencies[name] # trigger getters
+    Match.check @logger, Match.Any
+    log = @log
+    @logger.extend @
     @log = log
   details: (details) -> _.defaults details, _.pick(@, @signature())
   signature: -> throw new Error("Implement me!")

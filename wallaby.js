@@ -5,8 +5,9 @@ _.mixin(require("underscore.deep"));
 var config = _.deepExtend({
   testFramework: "mocha",
   files: [
-    "helper/**/*.coffee",
     "lib/**/*.coffee",
+    "helper/**/*.coffee",
+    "test-helper/**/*.coffee",
     "test/mocha.coffee"
   ],
   tests: [

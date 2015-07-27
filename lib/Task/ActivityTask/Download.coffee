@@ -7,12 +7,11 @@ Read = require "./BindingTask/Read"
 Save = require "./Save"
 
 class Download extends ActivityTask
-  constructor: (input, options, dependencies) ->
-    Match.check dependencies, Match.ObjectIncluding
-      read: Read
-      save: Save
-    dependencies.save.in = dependencies.read.out = new stream.PassThrough({objectMode: true})
+  constructor: (input, options, streams, dependencies) ->
     super
+    Match.check @read, Read
+    Match.check @save, Save
+    @save.in = @read.out = new stream.PassThrough({objectMode: true})
 
   execute: ->
     Promise.join(@read.execute(), @save.execute())

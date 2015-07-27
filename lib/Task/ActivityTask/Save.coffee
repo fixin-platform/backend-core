@@ -6,10 +6,8 @@ class Save extends ActivityTask
   constructor: (input, options, dependencies) ->
     Match.check input, Match.ObjectIncluding
       avatarId: String
-    Match.check dependencies, Match.ObjectIncluding
-      bookshelf: Object
     super
-    @knex = @bookshelf.knex
+    Match.check @bookshelf, Object
     @model = @createModel()
     @serializer = @createSerializer()
 
