@@ -3,10 +3,13 @@ ActivityTask = require "../ActivityTask"
 Match = require "mtr-match"
 
 class Save extends ActivityTask
-  constructor: (input, options, dependencies) ->
+  constructor: (input, options, streams, dependencies) ->
     Match.check input, Match.ObjectIncluding
       avatarId: String
     super
+    @knex = dependencies.knex
+    @bookshelf = dependencies.bookshelf
+    Match.check @knex, Function
     Match.check @bookshelf, Object
     @model = @createModel()
     @serializer = @createSerializer()

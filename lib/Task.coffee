@@ -5,8 +5,8 @@ Match = require "mtr-match"
 class Task
   constructor: (options, dependencies) ->
     _.extend @, options
-    for name in Object.getOwnPropertyNames(dependencies)
-      @[name] = dependencies[name] # trigger getters
+    # trigger getters
+    @logger = dependencies.logger
     Match.check @logger, Match.Any
     log = @log
     @logger.extend @
