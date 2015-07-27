@@ -17,6 +17,7 @@ class LimitOffset extends Read
 
   execute: ->
     Promise.bind(@)
+    .then @acquireCredential
     .then @getTotal
     .then @progressInit
     .then @readChapter
