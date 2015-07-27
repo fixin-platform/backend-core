@@ -1,15 +1,16 @@
 _ = require "underscore"
 Promise = require "bluebird"
-createKnex = require "../helper/knex"
-createBookshelf = require "../helper/bookshelf"
-createMongoDB = require "../helper/mongodb"
-createSWF = require "../helper/swf"
-createLogger = require "../helper/logger"
+createKnex = require "./knex"
+createBookshelf = require "./bookshelf"
+createMongoDB = require "./mongodb"
+createSWF = require "./swf"
+createLogger = require "./logger"
 
 module.exports = (settings) ->
   dependencies = {settings: settings}
   Object.defineProperties dependencies,
     knex: get: _.memoize ->
+      console.log "in knex"
       knex = createKnex dependencies.settings.knex
       knex.Promise.longStackTraces() if dependencies.settings.isDebug
       knex
