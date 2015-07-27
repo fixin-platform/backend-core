@@ -28,12 +28,8 @@ class UpsertThroughTemporaryTable extends Save
           @in.on "error", reject
       .all() # wait for objects to be inserted
       .then -> @save(trx)
-      .then ->
-        @out.write({count: inserts.length})
-        @out.write(false)
-        @out.end()
+      .then -> {count: inserts.length}
 
-  
   init: (trx) ->
     Promise.bind(@)
 #    .then ->

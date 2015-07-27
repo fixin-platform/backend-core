@@ -23,6 +23,7 @@ class LimitOffset extends Read
     .then @readChapter
     .all()
     .then -> @out.end()
+    .then -> {}
 
   readChapter: (total) ->
     offset = @offset
