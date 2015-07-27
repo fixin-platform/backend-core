@@ -16,4 +16,4 @@ chai.use(chaiSinon)
 global.sinon = require("sinon")
 
 Promise = require "bluebird"
-Promise.longStackTraces()
+process.env.BLUEBIRD_DEBUG=1
