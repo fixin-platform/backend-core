@@ -10,7 +10,6 @@ module.exports = (settings) ->
   dependencies = {settings: settings}
   Object.defineProperties dependencies,
     knex: get: _.memoize ->
-      console.log "in knex"
       knex = createKnex dependencies.settings.knex
       knex.Promise.longStackTraces() if dependencies.settings.isDebug
       knex
