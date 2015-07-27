@@ -2,6 +2,7 @@ _ = require "underscore"
 Promise = require "bluebird"
 Read = require "../Read"
 
+# It seems like this algorithm hangs for a while, then dump all downloaded info, but under heavy load, it dumps steadily, so most probably it's just some issue with stdout flush delay (caching or something)
 class LimitOffset extends Read
   constructor: (input, options, dependencies) ->
     _.defaults input,
