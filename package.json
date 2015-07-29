@@ -26,6 +26,7 @@
     "sinon-chai": "^2.8.0"
   },
   "dependencies": {
+    "bluebird": "^2.9.33",
     "moment": "^2.10.3",
     "aws-sdk": "^2.1.39",
     "errors": "^0.3.0",
