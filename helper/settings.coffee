@@ -9,5 +9,5 @@ module.exports = (file) ->
   fileLocal = "#{splinters.dir}/#{splinters.name}.local#{splinters.ext}"
   if fs.existsSync(fileLocal)
     settingsLocal = JSON.parse fs.readFileSync fileLocal, {encoding: "UTF-8"}
-    _.deepExtend settings, settingsLocal
+    settings = _.deepExtend settings, settingsLocal
   settings
