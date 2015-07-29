@@ -18,7 +18,7 @@ class Download extends ActivityTask
     Promise.join(@read.execute(), @save.execute())
 
   arguments: (parentInput, activityId) ->
-    input = stamp parentInput[activityId], parentInput
+    input = stamp parentInput[activityId].input, parentInput
     options = _.omit(parentInput[activityId], "input")
     input: input
     options: _.extend options, activityId: activityId
