@@ -12,7 +12,9 @@ class DecisionTask extends Task
     Match.check events, [Object]
     super(options, dependencies)
     @events = events
+
   signature: -> ["taskToken", "workflowExecution", "workflowType"]
+
   execute: ->
     new Promise (resolve, reject) =>
       try
@@ -33,11 +35,13 @@ class DecisionTask extends Task
       catch error
         reject error
       resolve()
+
   # default noops, can be implemented by child class if necessary
   DecisionTaskScheduled: (event) ->
   DecisionTaskStarted: (event) ->
   DecisionTaskCompleted: (event) ->
   ActivityTaskStarted: (event) ->
+
   # default decisions
   ScheduleActivityTask: (activityShorthand, input) ->
     decisionType: "ScheduleActivityTask"
@@ -47,6 +51,7 @@ class DecisionTask extends Task
         version: "1.0.0"
       activityId: activityShorthand
       input: JSON.stringify input
+
   # workflow helpers
   addDecision: (decision) ->
     @decisions.push decision
@@ -85,5 +90,10 @@ class DecisionTask extends Task
         if not barrier.length and not barrier.isPassed
           barrier.isPassed = true
           @["#{name}BarrierPassed"]()
+
+  # progress helpers
+  progressBarStart: (activityId) -> @mongodb.collection("Commands").update({_id: @input.commandId, "progressBars.activityId": activityId}, {$set: {"progressBars.$.isStarted": true}})
+  progressBarFinish: (activityId) -> @mongodb.collection("Commands").update({_id: @input.commandId, "progressBars.activityId": activityId}, {$set: {"progressBars.$.isFinished": true}})
+
 
 module.exports = DecisionTask

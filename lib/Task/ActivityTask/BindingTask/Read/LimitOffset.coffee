@@ -20,7 +20,7 @@ class LimitOffset extends Read
     Promise.bind(@)
     .then @acquireCredential
     .then @getTotal
-    .then @progressInit
+    .then @progressBarSetTotal
     .then @readChapter
     .all()
     .then -> @out.end()
@@ -49,6 +49,7 @@ class LimitOffset extends Read
     .spread (response, body) ->
       @info "LimitOffset:readPageResponse", @details({params: params, response: response.toJSON(), body: body})
       @out.write(object) for object in body
+      @progressBarIncCurrent(body.length)
       [response, body]
 
 module.exports = LimitOffset

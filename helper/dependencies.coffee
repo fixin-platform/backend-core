@@ -1,12 +1,16 @@
 _ = require "underscore"
 Promise = require "bluebird"
+Match = require "mtr-match"
 createKnex = require "./knex"
 createBookshelf = require "./bookshelf"
 createMongoDB = require "./mongodb"
 createSWF = require "./swf"
 createLogger = require "./logger"
 
-module.exports = (settings) ->
+module.exports = (settings, handle) ->
+  Match.check settings, Object
+  Match.check handle, String
+  settings.mongodb.url = settings.mongodb.url.replace("%database%", handle)
   dependencies = {settings: settings}
   Object.defineProperties dependencies,
     knex: get: _.memoize ->

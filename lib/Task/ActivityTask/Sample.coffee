@@ -6,9 +6,7 @@ class Sample extends ActivityTask
     super
     @knex = dependencies.knex
     @bookshelf = dependencies.bookshelf
-    @mongodb = dependencies.mongodb
     Match.check @knex, Function
     Match.check @bookshelf, Object
-    Match.check @mongodb, Match.Any # strange kind of woman
 
 module.exports = Sample

@@ -12,6 +12,7 @@ class OptimisticLookahead extends Read
     @count = 0
     Promise.bind(@)
     .then @acquireCredential
+    .then -> @progressBarSetTotal(0) # known to be unknown
     .then -> new Promise (resolve, reject) =>
       @reject = reject
       @resolve = resolve
@@ -47,9 +48,9 @@ class OptimisticLookahead extends Read
   readPage: (page) ->
     @getPage(page).bind(@)
     .spread (response, body) ->
-      for object in body
-        @out.write(object)
-        @count++
+      @out.write(object) for object in body
+      @progressBarIncCurrent(body.length)
+      @count += body.length
       [response, body]
 
   shouldReadNextChapter: (response, body) -> throw new Error("Implement me!")

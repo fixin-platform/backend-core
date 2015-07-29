@@ -17,6 +17,7 @@ class UpsertThroughTemporaryTable extends Save
     inserts = []
     @knex.transaction (trx) =>
       Promise.bind(@)
+      .then -> @progressBarSetTotal(0)
       .then -> @init(trx)
       .then ->
         new Promise (resolve, reject) =>
@@ -45,7 +46,8 @@ class UpsertThroughTemporaryTable extends Save
   insert: (trx, externalObject) ->
     instance = new @temporaryModel(@serializer.toInternal(externalObject))
     instance.set("_avatarId", @avatarId)
-    instance.save(null, {transacting: trx})
+    instance.save(null, {transacting: trx}).bind(@)
+    .then -> @progressBarIncCurrent(1)
 
   save: (trx) ->
       Promise.bind(@)

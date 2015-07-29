@@ -9,8 +9,6 @@ class BindingTask extends ActivityTask
     Match.check input, Match.ObjectIncluding
       avatarId: String
     super
-    @mongodb = dependencies.mongodb
-    Match.check @mongodb, Match.Any
     @binding = @createBinding()
 
   acquireCredential: ->
