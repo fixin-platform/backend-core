@@ -25,9 +25,11 @@ class WorkflowExecutionHistoryGenerator
     Match.check root,
       events: [Object]
       decisions: [Object]
+      updates: [[Object]]
       branches: Match.Optional [Object]
     events = _.deepClone root.events
     decisions = _.deepClone root.decisions
+    updates = _.deepClone root.updates
     branches = _.deepClone root.branches or []
     previousEvents = _.deepClone previousEvents
     events.push @DecisionTaskScheduled()
@@ -38,6 +40,7 @@ class WorkflowExecutionHistoryGenerator
       name: _.pluck(nextEvents, "eventType").join(" -> ")
       events: nextEvents
       decisions: decisions
+      updates: updates
     decisionEvents = @decisionsToEvents(decisions)
     nextEventsWithDecisionEvents = @nextEvents(decisionEvents, nextEvents)
     for event in nextEventsWithDecisionEvents
@@ -96,6 +99,7 @@ class WorkflowExecutionHistoryGenerator
   Decision: (attributes, options) ->
     attributes.input = JSON.stringify attributes.input if attributes.input
     attributes.result = JSON.stringify attributes.result if attributes.result
+    attributes.details = JSON.stringify attributes.details if attributes.details
     _.defaults options,
       "#{@decisionAttributesProperty(options)}": attributes
 # Here should be a mega-validator of event
@@ -230,6 +234,10 @@ class WorkflowExecutionHistoryGenerator
         decisionType: "FailWorkflowExecution"
       , options
     )
+  progressBarStartUpdate: (commandId, activityId) ->
+    [{_id: commandId, "progressBars.activityId": activityId}, {$set: {"progressBars.$.isStarted": true}}]
+  progressBarFinishUpdate: (commandId, activityId) ->
+    [{_id: commandId, "progressBars.activityId": activityId}, {$set: {"progressBars.$.isFinished": true}}]
   remappedEventTypes:
     "ActivityTaskStarted": [
       fromMatchField: "activityTaskScheduledEventAttributes.activityId"
