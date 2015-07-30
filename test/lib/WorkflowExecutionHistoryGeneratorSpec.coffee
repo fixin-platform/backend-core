@@ -75,6 +75,15 @@ describe "WorkflowExecutionHistoryGenerator", ->
       histories.length.should.be.equal(2)
       histories[0].events.length.should.be.equal(1 + 2)
       histories[1].events.length.should.be.equal(1 + 2 + 1 + 2 + 1 + 2)
+      histories[1].events[3].eventType.should.be.equal("DecisionTaskCompleted")
+      histories[1].events[3].decisionTaskCompletedEventAttributes.executionContext.should.be.equal JSON.stringify
+        updates: [
+          [
+            _id: commandId, "progressBars.activityId": "FreshdeskDownloadUsers"
+          ,
+            $set: {"progressBars.$.isStarted": true}
+          ]
+        ]
       histories[1].events[4].eventType.should.be.equal("ActivityTaskScheduled")
       histories[1].events[5].eventType.should.be.equal("ActivityTaskStarted")
       histories[1].events[6].eventType.should.be.equal("ActivityTaskCompleted")

@@ -41,7 +41,7 @@ class WorkflowExecutionHistoryGenerator
       events: nextEvents
       decisions: decisions
       updates: updates
-    decisionEvents = @decisionsToEvents(decisions)
+    decisionEvents = @decisionsToEvents(decisions, updates)
     nextEventsWithDecisionEvents = @nextEvents(decisionEvents, nextEvents)
     for event in nextEventsWithDecisionEvents
       mappings = @remappedEventTypes[event.eventType] or []
@@ -56,9 +56,10 @@ class WorkflowExecutionHistoryGenerator
     for branch in branches
       histories = histories.concat @trace(branch, nextEventsWithDecisionEvents)
     histories
-  decisionsToEvents: (decisions) ->
+  decisionsToEvents: (decisions, updates) ->
     events = []
-    events.push @DecisionTaskCompleted()
+    events.push @DecisionTaskCompleted
+      updates: updates
     for decision in decisions
       attributes = decision[@decisionAttributesProperty(decision)]
       switch decision.decisionType
@@ -91,6 +92,7 @@ class WorkflowExecutionHistoryGenerator
   Event: (attributes, options) ->
     attributes.input = JSON.stringify attributes.input if attributes.input
     attributes.result = JSON.stringify attributes.result if attributes.result
+    attributes.executionContext = JSON.stringify attributes.executionContext if attributes.executionContext
     _.defaults options,
       eventId: 0
       eventTimestamp: null
@@ -129,9 +131,10 @@ class WorkflowExecutionHistoryGenerator
         eventType: "DecisionTaskStarted"
       , options
     )
-  DecisionTaskCompleted: (attributes = {}, options = {}) ->
+  DecisionTaskCompleted: (executionContext, attributes = {}, options = {}) ->
     @Event(
-      _.extend {}
+      _.extend
+        executionContext: executionContext
       , attributes
     , _.extend
         eventType: "DecisionTaskCompleted"
