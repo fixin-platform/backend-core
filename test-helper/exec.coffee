@@ -1,13 +1,14 @@
+_ = require "underscore"
 Promise = require "bluebird"
+dargs = require "dargs"
 {spawn} = require("child_process")
 
-module.exports = (path, args, options) ->
+module.exports = (path, options, args, spawnOptions) ->
+  _.defaults options,
+    settings: "#{process.env.ROOT_DIR}/settings/dev.json"
+    domain: "Dev"
   new Promise (resolve, reject) ->
-    child = spawn("#{process.env.ROOT_DIR}/#{path}", [
-      "--settings", "#{process.env.ROOT_DIR}/settings/dev.json"
-      "--domain", "Dev"
-    ].concat(args)
-    , options)
+    child = spawn("#{process.env.ROOT_DIR}/#{path}", dargs(options).concat(args), spawnOptions)
     stdoutData = ""
     stderrData = ""
     child.stdout.pipe(process.stdout)
