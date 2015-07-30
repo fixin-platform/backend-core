@@ -12,18 +12,16 @@ class BindingTask extends ActivityTask
     @binding = @createBinding()
 
   acquireCredential: ->
-    api = @binding.api
-    scopes = @binding.scopes
+    selector =
+      avatarId: @avatarId
+      api: @binding.api
+      scopes: {$all: @binding.scopes}
     Promise.bind(@)
-    .then -> @mongodb.collection("Credentials").findOne(
-      api: api
-      scopes: {$all: scopes}
-    )
+    .then -> @mongodb.collection("Credentials").findOne(selector)
     .then (credential) ->
       throw new errors.RuntimeError(
-        message: "Can't find #{api} credential for scopes \"#{scopes}\""
-        api: api
-        scopes: scopes
+        message: "Can't find API credential"
+        selector: selector
       ) unless credential
       @binding.setCredential(credential)
       @binding
