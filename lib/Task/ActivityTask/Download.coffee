@@ -13,6 +13,10 @@ class Download extends ActivityTask
     Match.check @read, Read
     Match.check @save, Save
     @save.in = @read.out = new stream.PassThrough({objectMode: true})
+    @read.progressBarSetTotal = @progressBarSetTotal.bind(@)
+    @read.progressBarIncCurrent = (inc) -> Promise.resolve(inc) # essentially noop
+    @save.progressBarSetTotal = (total) -> Promise.resolve(total) # essentially noop
+    @save.progressBarIncCurrent = @progressBarIncCurrent.bind(@)
 
   execute: ->
     Promise.join(@read.execute(), @save.execute())
