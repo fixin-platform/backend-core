@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Core backend for Fixin platform",
   "readme": "README.md",
+  "license": "AGPLv3",
   "directories": {
     "test": "test"
   },
