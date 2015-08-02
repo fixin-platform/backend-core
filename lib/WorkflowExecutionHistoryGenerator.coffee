@@ -70,6 +70,8 @@ class WorkflowExecutionHistoryGenerator
           events.push @WorkflowExecutionCompleted(attributes.result)
         when "FailWorkflowExecution"
           events.push @WorkflowExecutionFailed(attributes.reason, attributes.details)
+        when "CancelWorkflowExecution"
+          # not implemented
         else
           throw new Error("decisionsToEvents() for decisionType \"#{decision.decisionType}\" not implemented")
     events
@@ -202,6 +204,15 @@ class WorkflowExecutionHistoryGenerator
         eventType: "WorkflowExecutionCompleted"
       , options
     )
+  WorkflowExecutionCancelRequested: (cause = "", attributes = {}, options = {}) ->
+    @Event(
+      _.extend
+        cause: cause
+      , attributes
+    , _.extend
+        eventType: "WorkflowExecutionCancelRequested"
+      , options
+    )
   ScheduleActivityTask: (activityShorthand, input = {}, attributes = {}, options = {}) ->
     @Decision(
       _.extend
@@ -235,6 +246,16 @@ class WorkflowExecutionHistoryGenerator
     ,
       _.extend
         decisionType: "FailWorkflowExecution"
+      , options
+    )
+  CancelWorkflowExecution: (details = {}, attributes = {}, options = {}) ->
+    @Decision(
+      _.extend
+        details: details
+      , attributes
+    ,
+      _.extend
+        decisionType: "CancelWorkflowExecution"
       , options
     )
   progressBarStartUpdate: (commandId, activityId) ->

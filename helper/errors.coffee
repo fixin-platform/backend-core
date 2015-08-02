@@ -28,5 +28,4 @@ errors.create
   defaultExplanation: "The rate limit for prodived credentials was reached"
   defaultResponse: "Try again later - OR - Ask the API developer to increase the limit"
 
-
 module.exports = errors

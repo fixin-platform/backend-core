@@ -49,7 +49,13 @@ class DecisionTask extends Task
         @executionContext = JSON.stringify
           updates: @updates
       catch error
-        reject error
+        if error.message is "WorkflowExecutionCancelRequested"
+          @barriers = {}
+          @decisions = []
+          @updates = []
+          @addDecision @CancelWorkflowExecution({})
+        else
+          reject error
       resolve()
 
   # default handlers (can be overridden by child class)
@@ -80,6 +86,9 @@ class DecisionTask extends Task
       timeoutType: attributes.timeoutType
       lastHeartbeatDetails: attributes.details
 
+  WorkflowExecutionCancelRequested: (event, attributes) ->
+    throw new Error("WorkflowExecutionCancelRequested")
+
   # default decisions
   ScheduleActivityTask: (activityShorthand, input) ->
     decisionType: "ScheduleActivityTask"
@@ -89,15 +98,22 @@ class DecisionTask extends Task
         version: "1.0.0"
       activityId: activityShorthand
       input: JSON.stringify input
+
   FailWorkflowExecution: (reason, details) ->
     decisionType: "FailWorkflowExecution"
     failWorkflowExecutionDecisionAttributes:
       reason: reason
       details: JSON.stringify details
+
   CompleteWorkflowExecution: (result) ->
     decisionType: "CompleteWorkflowExecution"
     completeWorkflowExecutionDecisionAttributes:
       result: JSON.stringify result
+
+  CancelWorkflowExecution: (details) ->
+    decisionType: "CancelWorkflowExecution"
+    cancelWorkflowExecutionDecisionAttributes:
+      details: JSON.stringify details
 
   # workflow helpers
   addDecision: (decision) ->
