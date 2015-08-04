@@ -79,11 +79,11 @@ class DecisionTask extends Task
     @removeObstacle scheduledAttributes.activityId
 
   ActivityTaskFailed: (event, attributes, scheduledEvent, scheduledAttributes, startedEvent, startedAttributes) ->
-    @addUpdate @progressBarCompleteUpdate scheduledAttributes.activityId
+    @addUpdate @progressBarFailUpdate scheduledAttributes.activityId
     @addDecision @FailWorkflowExecution attributes.reason, attributes.details
 
   ActivityTaskTimedOut: (event, attributes, scheduledEvent, scheduledAttributes, startedEvent, startedAttributes) ->
-    @addUpdate @progressBarCompleteUpdate scheduledAttributes.activityId
+    @addUpdate @progressBarFailUpdate scheduledAttributes.activityId
     @addDecision @FailWorkflowExecution "Activity task timed out",
       activityId: scheduledAttributes.activityId
       timeoutType: attributes.timeoutType
