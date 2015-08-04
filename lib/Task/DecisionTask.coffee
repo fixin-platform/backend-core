@@ -75,15 +75,13 @@ class DecisionTask extends Task
     @removeScheduleActivityTaskDecision attributes.activityId
 
   ActivityTaskCompleted: (event, attributes, result, scheduledEvent, scheduledAttributes, startedEvent, startedAttributes) ->
-    @addUpdate @progressBarCompleteUpdate scheduledAttributes.activityId
+    @results[scheduledAttributes.activityId] = result
     @removeObstacle scheduledAttributes.activityId
 
   ActivityTaskFailed: (event, attributes, scheduledEvent, scheduledAttributes, startedEvent, startedAttributes) ->
-    @addUpdate @progressBarFailUpdate scheduledAttributes.activityId
     @addDecision @FailWorkflowExecution attributes.reason, attributes.details
 
   ActivityTaskTimedOut: (event, attributes, scheduledEvent, scheduledAttributes, startedEvent, startedAttributes) ->
-    @addUpdate @progressBarFailUpdate scheduledAttributes.activityId
     @addDecision @FailWorkflowExecution "Activity task timed out",
       activityId: scheduledAttributes.activityId
       timeoutType: attributes.timeoutType
@@ -120,9 +118,15 @@ class DecisionTask extends Task
 
   # workflow helpers
   addDecision: (decision) ->
+    if not @decisions.length and not @commandSetIsStartedUpdateAdded
+      @commandSetIsStartedUpdateAdded = true # unelegant, but let's stick with that
+      @addUpdate @commandSetIsStarted @input.commandId
     @decisions.push decision
-    if decision.decisionType is "ScheduleActivityTask"
-      @addUpdate @progressBarStartUpdate @decisionAttributes(decision).activityId
+    if decision.decisionType is "CompleteWorkflowExecution"
+      @addUpdate @commandSetIsCompleted @input.commandId
+      @addUpdate @commandSetResult @input.commandId, JSON.parse decision.completeWorkflowExecutionDecisionAttributes.result
+    if decision.decisionType is "FailWorkflowExecution"
+      @addUpdate @commandSetIsFailed @input.commandId
   removeDecision: (decisionType, query) ->
     index = @findIndex @decisions, _.extend
       decisionType: decisionType
@@ -168,8 +172,9 @@ class DecisionTask extends Task
           @["#{name}BarrierPassed"]()
 
   # progress helpers
-  progressBarStartUpdate: (activityId) -> [{_id: @input.commandId, "progressBars.activityId": activityId}, {$set: {"progressBars.$.isStarted": true}}]
-  progressBarCompleteUpdate: (activityId) -> [{_id: @input.commandId, "progressBars.activityId": activityId}, {$set: {"progressBars.$.isCompleted": true}}]
-  progressBarFailUpdate: (activityId) -> [{_id: @input.commandId, "progressBars.activityId": activityId}, {$set: {"progressBars.$.isFailed": true}}]
+  commandSetIsStarted: (commandId) -> [{_id: commandId}, {$set: {isStarted: true}}]
+  commandSetIsCompleted: (commandId) -> [{_id: commandId}, {$set: {isCompleted: true}}]
+  commandSetIsFailed: (commandId) -> [{_id: commandId}, {$set: {isFailed: true}}]
+  commandSetResult: (commandId, result) -> [{_id: commandId}, {$set: {result: result}}]
 
 module.exports = DecisionTask

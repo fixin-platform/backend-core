@@ -258,12 +258,10 @@ class WorkflowExecutionHistoryGenerator
         decisionType: "CancelWorkflowExecution"
       , options
     )
-  progressBarStartUpdate: (commandId, activityId) ->
-    [{_id: commandId, "progressBars.activityId": activityId}, {$set: {"progressBars.$.isStarted": true}}]
-  progressBarCompleteUpdate: (commandId, activityId) ->
-    [{_id: commandId, "progressBars.activityId": activityId}, {$set: {"progressBars.$.isCompleted": true}}]
-  progressBarFailUpdate: (commandId, activityId) ->
-    [{_id: commandId, "progressBars.activityId": activityId}, {$set: {"progressBars.$.isFailed": true}}]
+  commandSetIsStarted: (commandId) -> [{_id: commandId}, {$set: {isStarted: true}}]
+  commandSetIsCompleted: (commandId) -> [{_id: commandId}, {$set: {isCompleted: true}}]
+  commandSetIsFailed: (commandId) -> [{_id: commandId}, {$set: {isFailed: true}}]
+  commandSetResult: (commandId, result) -> [{_id: commandId}, {$set: {result: result}}]
   remappedEventTypes:
     "ActivityTaskStarted": [
       fromMatchField: "activityTaskScheduledEventAttributes.activityId"

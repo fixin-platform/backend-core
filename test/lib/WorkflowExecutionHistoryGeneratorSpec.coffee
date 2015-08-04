@@ -62,13 +62,11 @@ describe "WorkflowExecutionHistoryGenerator", ->
             avatarId: "D6vpAkoHyBXPadp4c"
             params: {}
         ]
-        updates: [
-          @progressBarStartUpdate commandId, "FreshdeskDownloadUsers"
-        ]
+        updates: [@commandSetIsStarted commandId, "FreshdeskDownloadUsers"]
         branches: [
           events: [@ActivityTaskCompleted "FreshdeskDownloadUsers"]
-          decisions: []
-          updates: [@progressBarCompleteUpdate commandId, "FreshdeskDownloadUsers"]
+          decisions: [@CompleteWorkflowExecution {success: true}]
+          updates: [@commandSetIsCompleted commandId, "FreshdeskDownloadUsers"]
         ]
       ]
       histories = generator.histories()
@@ -79,9 +77,9 @@ describe "WorkflowExecutionHistoryGenerator", ->
       histories[1].events[3].decisionTaskCompletedEventAttributes.executionContext.should.be.equal JSON.stringify
         updates: [
           [
-            _id: commandId, "progressBars.activityId": "FreshdeskDownloadUsers"
+            _id: commandId
           ,
-            $set: {"progressBars.$.isStarted": true}
+            $set: {isStarted: true}
           ]
         ]
       histories[1].events[4].eventType.should.be.equal("ActivityTaskScheduled")
@@ -107,7 +105,7 @@ describe "WorkflowExecutionHistoryGenerator", ->
             params: {}
         ]
         updates: [
-          @progressBarStartUpdate commandId, "FreshdeskDownloadUsers"
+          @commandSetIsStarted commandId
         ]
       ]
       histories = generator.histories()
@@ -147,9 +145,9 @@ describe "WorkflowExecutionHistoryGenerator", ->
         ]
         updates: [
           [
-            _id: commandId, "progressBars.activityId": "FreshdeskDownloadUsers"
+            _id: commandId
           ,
-            $set: {"progressBars.$.isStarted": true}
+            $set: {isStarted: true}
           ]
         ]
       ]
@@ -179,9 +177,7 @@ describe "WorkflowExecutionHistoryGenerator", ->
           params: {}
       ]
       updates: [
-        @progressBarStartUpdate commandId, "FreshdeskDownloadUsers"
-      ,
-        @progressBarStartUpdate commandId, "_3DCartDownloadOrders"
+        @commandSetIsStarted commandId
       ]
       branches: [
         events: [
@@ -195,13 +191,7 @@ describe "WorkflowExecutionHistoryGenerator", ->
               Freshdesk: "D6vpAkoHyBXPadp4c"
               _3DCart: "T7JwArn9vCJLiKXbn"
         ]
-        updates: [
-          @progressBarCompleteUpdate commandId, "FreshdeskDownloadUsers"
-        ,
-          @progressBarCompleteUpdate commandId, "_3DCartDownloadOrders"
-        ,
-          @progressBarStartUpdate commandId, "BellefitGenerate_3DCartOrdersByFreshdeskUserIdCollection"
-        ]
+        updates: []
         branches: [
           events: [
             @ActivityTaskCompleted "BellefitGenerate_3DCartOrdersByFreshdeskUserIdCollection"
@@ -210,24 +200,24 @@ describe "WorkflowExecutionHistoryGenerator", ->
             @CompleteWorkflowExecution()
           ]
           updates: [
-            @progressBarCompleteUpdate commandId, "BellefitGenerate_3DCartOrdersByFreshdeskUserIdCollection"
+            @commandSetIsCompleted commandId, "BellefitGenerate_3DCartOrdersByFreshdeskUserIdCollection"
           ]
         ,
           events: [@ActivityTaskCompleted "FreshdeskDownloadUsers"]
           decisions: []
-          updates: [@progressBarCompleteUpdate commandId, "FreshdeskDownloadUsers"]
+          updates: []
         ,
           events: [@ActivityTaskCompleted "_3DCartDownloadOrders"]
           decisions: []
-          updates: [@progressBarCompleteUpdate commandId, "_3DCartDownloadOrders"]
+          updates: []
         ,
           events: [@ActivityTaskFailed "FreshdeskDownloadUsers"]
           decisions: [@FailWorkflowExecution()]
-          updates: [@progressBarFailUpdate commandId, "FreshdeskDownloadUsers"]
+          updates: []
         ,
           events: [@ActivityTaskFailed "_3DCartDownloadOrders"]
           decisions: [@FailWorkflowExecution()]
-          updates: [@progressBarFailUpdate commandId, "_3DCartDownloadOrders"]
+          updates: []
         ]
       ]
     ]
