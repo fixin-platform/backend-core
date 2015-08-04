@@ -23,9 +23,6 @@ class ActivityTask extends Task
     @mongodb = dependencies.mongodb
     Match.check @mongodb, Match.Any
 
-  progressBarSetIsStarted: -> @mongodb.collection("Commands").update({_id: @commandId, "progressBars.activityId": @activityId}, {$set: {"progressBars.$.isStarted": true}}).then -> true
-  progressBarSetIsCompleted: -> @mongodb.collection("Commands").update({_id: @commandId, "progressBars.activityId": @activityId}, {$set: {"progressBars.$.isCompleted": true}}).then -> true
-  progressBarSetIsFailed: -> @mongodb.collection("Commands").update({_id: @commandId, "progressBars.activityId": @activityId}, {$set: {"progressBars.$.isFailed": true}}).then -> true
   progressBarSetTotal: (total) -> @mongodb.collection("Commands").update({_id: @commandId, "progressBars.activityId": @activityId}, {$set: {"progressBars.$.total": total}}).then -> total
   progressBarIncCurrent: (inc) -> @mongodb.collection("Commands").update({_id: @commandId, "progressBars.activityId": @activityId}, {$inc: {"progressBars.$.current": inc}}).then -> inc
   # progressBarIncCurrent shouldn't be called for each object, because it will result in a flood of DB writes; instead, progressBarIncCurrent should be called in batches (e.g. for each page)
