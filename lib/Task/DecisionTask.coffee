@@ -41,6 +41,9 @@ class DecisionTask extends Task
                 eventId: attributes.startedEventId
               startedAttributes = @eventAttributes(startedEvent)
               args.push startedEvent, startedAttributes
+            if event.eventType is "WorkflowExecutionStarted"
+              @input = input
+              @results = {}
             @[event.eventType].apply(@, args)
           else
             throw new errors.EventHandlerNotImplementedError
