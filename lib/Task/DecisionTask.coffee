@@ -75,15 +75,15 @@ class DecisionTask extends Task
     @removeScheduleActivityTaskDecision attributes.activityId
 
   ActivityTaskCompleted: (event, attributes, result, scheduledEvent, scheduledAttributes, startedEvent, startedAttributes) ->
-    @addUpdate @progressBarFinishUpdate scheduledAttributes.activityId
+    @addUpdate @progressBarCompleteUpdate scheduledAttributes.activityId
     @removeObstacle scheduledAttributes.activityId
 
   ActivityTaskFailed: (event, attributes, scheduledEvent, scheduledAttributes, startedEvent, startedAttributes) ->
-    @addUpdate @progressBarFinishUpdate scheduledAttributes.activityId
+    @addUpdate @progressBarCompleteUpdate scheduledAttributes.activityId
     @addDecision @FailWorkflowExecution attributes.reason, attributes.details
 
   ActivityTaskTimedOut: (event, attributes, scheduledEvent, scheduledAttributes, startedEvent, startedAttributes) ->
-    @addUpdate @progressBarFinishUpdate scheduledAttributes.activityId
+    @addUpdate @progressBarCompleteUpdate scheduledAttributes.activityId
     @addDecision @FailWorkflowExecution "Activity task timed out",
       activityId: scheduledAttributes.activityId
       timeoutType: attributes.timeoutType
@@ -169,6 +169,7 @@ class DecisionTask extends Task
 
   # progress helpers
   progressBarStartUpdate: (activityId) -> [{_id: @input.commandId, "progressBars.activityId": activityId}, {$set: {"progressBars.$.isStarted": true}}]
-  progressBarFinishUpdate: (activityId) -> [{_id: @input.commandId, "progressBars.activityId": activityId}, {$set: {"progressBars.$.isFinished": true}}]
+  progressBarCompleteUpdate: (activityId) -> [{_id: @input.commandId, "progressBars.activityId": activityId}, {$set: {"progressBars.$.isCompleted": true}}]
+  progressBarFailUpdate: (activityId) -> [{_id: @input.commandId, "progressBars.activityId": activityId}, {$set: {"progressBars.$.isFailed": true}}]
 
 module.exports = DecisionTask

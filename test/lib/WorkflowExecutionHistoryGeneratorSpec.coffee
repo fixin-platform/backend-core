@@ -68,7 +68,7 @@ describe "WorkflowExecutionHistoryGenerator", ->
         branches: [
           events: [@ActivityTaskCompleted "FreshdeskDownloadUsers"]
           decisions: []
-          updates: [@progressBarFinishUpdate commandId, "FreshdeskDownloadUsers"]
+          updates: [@progressBarCompleteUpdate commandId, "FreshdeskDownloadUsers"]
         ]
       ]
       histories = generator.histories()
@@ -196,9 +196,9 @@ describe "WorkflowExecutionHistoryGenerator", ->
               _3DCart: "T7JwArn9vCJLiKXbn"
         ]
         updates: [
-          @progressBarFinishUpdate commandId, "FreshdeskDownloadUsers"
+          @progressBarCompleteUpdate commandId, "FreshdeskDownloadUsers"
         ,
-          @progressBarFinishUpdate commandId, "_3DCartDownloadOrders"
+          @progressBarCompleteUpdate commandId, "_3DCartDownloadOrders"
         ,
           @progressBarStartUpdate commandId, "BellefitGenerate_3DCartOrdersByFreshdeskUserIdCollection"
         ]
@@ -210,24 +210,24 @@ describe "WorkflowExecutionHistoryGenerator", ->
             @CompleteWorkflowExecution()
           ]
           updates: [
-            @progressBarFinishUpdate commandId, "BellefitGenerate_3DCartOrdersByFreshdeskUserIdCollection"
+            @progressBarCompleteUpdate commandId, "BellefitGenerate_3DCartOrdersByFreshdeskUserIdCollection"
           ]
         ,
           events: [@ActivityTaskCompleted "FreshdeskDownloadUsers"]
           decisions: []
-          updates: [@progressBarFinishUpdate commandId, "FreshdeskDownloadUsers"]
+          updates: [@progressBarCompleteUpdate commandId, "FreshdeskDownloadUsers"]
         ,
           events: [@ActivityTaskCompleted "_3DCartDownloadOrders"]
           decisions: []
-          updates: [@progressBarFinishUpdate commandId, "_3DCartDownloadOrders"]
+          updates: [@progressBarCompleteUpdate commandId, "_3DCartDownloadOrders"]
         ,
           events: [@ActivityTaskFailed "FreshdeskDownloadUsers"]
           decisions: [@FailWorkflowExecution()]
-          updates: [@progressBarFinishUpdate commandId, "FreshdeskDownloadUsers"]
+          updates: [@progressBarFailUpdate commandId, "FreshdeskDownloadUsers"]
         ,
           events: [@ActivityTaskFailed "_3DCartDownloadOrders"]
           decisions: [@FailWorkflowExecution()]
-          updates: [@progressBarFinishUpdate commandId, "_3DCartDownloadOrders"]
+          updates: [@progressBarFailUpdate commandId, "_3DCartDownloadOrders"]
         ]
       ]
     ]

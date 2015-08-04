@@ -260,8 +260,10 @@ class WorkflowExecutionHistoryGenerator
     )
   progressBarStartUpdate: (commandId, activityId) ->
     [{_id: commandId, "progressBars.activityId": activityId}, {$set: {"progressBars.$.isStarted": true}}]
-  progressBarFinishUpdate: (commandId, activityId) ->
-    [{_id: commandId, "progressBars.activityId": activityId}, {$set: {"progressBars.$.isFinished": true}}]
+  progressBarCompleteUpdate: (commandId, activityId) ->
+    [{_id: commandId, "progressBars.activityId": activityId}, {$set: {"progressBars.$.isCompleted": true}}]
+  progressBarFailUpdate: (commandId, activityId) ->
+    [{_id: commandId, "progressBars.activityId": activityId}, {$set: {"progressBars.$.isFailed": true}}]
   remappedEventTypes:
     "ActivityTaskStarted": [
       fromMatchField: "activityTaskScheduledEventAttributes.activityId"
