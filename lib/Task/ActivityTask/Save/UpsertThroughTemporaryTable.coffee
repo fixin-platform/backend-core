@@ -60,15 +60,15 @@ class UpsertThroughTemporaryTable extends Save
               UPDATE "#{@model::tableName}" AS storage
               SET #{@getUpdateColumns("buffer")}
               FROM "#{@bufferTableName}" AS buffer
-              WHERE storage."id" = buffer."id" AND storage."_avatarId" = buffer."_avatarId"
+              WHERE storage."_uid" = buffer."_uid" AND storage."_avatarId" = buffer."_avatarId"
             """)
       .then ->
         trx.raw("""
               INSERT INTO "#{@model::tableName}"
               SELECT buffer.*
               FROM "#{@bufferTableName}" AS buffer
-              LEFT OUTER JOIN "#{@model::tableName}" as storage ON (buffer."id" = storage."id" AND buffer."_avatarId" = storage."_avatarId")
-              WHERE storage."id" IS NULL
+              LEFT OUTER JOIN "#{@model::tableName}" as storage ON (buffer."_uid" = storage."_uid" AND buffer."_avatarId" = storage."_avatarId")
+              WHERE storage."_uid" IS NULL
             """)
 #      .then ->
 #        trx.raw("""
