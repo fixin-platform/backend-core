@@ -1,6 +1,7 @@
 _ = require "underscore"
 Promise = require "bluebird"
 Match = require "mtr-match"
+stamp = require "../../helper/stamp"
 Task = require "../Task"
 errors = require "../../helper/errors"
 
@@ -28,5 +29,11 @@ class ActivityTask extends Task
   # progressBarIncCurrent shouldn't be called for each object, because it will result in a flood of DB writes; instead, progressBarIncCurrent should be called in batches (e.g. for each page)
 
   execute: -> throw new Error("Implement me!")
+
+  arguments: (parentInput, activityId) ->
+    input = stamp parentInput[activityId].input, parentInput
+    options = _.omit(parentInput[activityId], "input")
+    input: input
+    options: _.extend options, activityId: activityId
 
 module.exports = ActivityTask

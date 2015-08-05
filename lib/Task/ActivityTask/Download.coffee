@@ -2,7 +2,6 @@ _ = require "underscore"
 Promise = require "bluebird"
 stream = require "readable-stream"
 Match = require "mtr-match"
-stamp = require "../../../helper/stamp"
 ActivityTask = require "../ActivityTask"
 Read = require "./BindingTask/Read"
 Save = require "./Save"
@@ -20,11 +19,5 @@ class Download extends ActivityTask
 
   execute: ->
     Promise.join(@read.execute(), @save.execute())
-
-  arguments: (parentInput, activityId) ->
-    input = stamp parentInput[activityId].input, parentInput
-    options = _.omit(parentInput[activityId], "input")
-    input: input
-    options: _.extend options, activityId: activityId
 
 module.exports = Download
