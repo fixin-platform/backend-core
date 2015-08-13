@@ -10,7 +10,7 @@ module.exports = (file) ->
     file
     "#{splinters.dir}/#{splinters.name}.specific#{splinters.ext}"
     "#{splinters.dir}/#{splinters.name}.local#{splinters.ext}"
-    "~/.fixin/settings/#{splinters.name}.private#{splinters.ext}"
+    "#{process.env[if process.platform is "win32" then "USERPROFILE" else "HOME"]}/.fixin/settings/#{splinters.name}.private#{splinters.ext}"
   ]
   for file in files
     if fs.existsSync(file)
