@@ -13,6 +13,7 @@ module.exports = (file) ->
     "#{process.env[if process.platform is "win32" then "USERPROFILE" else "HOME"]}/.fixin/settings/#{splinters.name}.private#{splinters.ext}"
   ]
   for file in files
+    console.log file, fs.existsSync(file)
     if fs.existsSync(file)
       settings = _.deepExtend settings, JSON.parse fs.readFileSync file, {encoding: "UTF-8"}
   settings
