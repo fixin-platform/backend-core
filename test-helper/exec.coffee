@@ -5,8 +5,8 @@ dargs = require "dargs"
 
 module.exports = (path, options, args, spawnOptions) ->
   _.defaults options,
-    settings: "#{process.env.ROOT_DIR}/settings/dev.json"
-    domain: "Dev"
+    settings: "#{process.env.ROOT_DIR}/settings/test.json"
+    domain: "Test"
   new Promise (resolve, reject) ->
     child = spawn("#{process.env.ROOT_DIR}/#{path}", dargs(options).concat(args), spawnOptions)
     stdoutData = ""
