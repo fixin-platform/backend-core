@@ -18,5 +18,4 @@ module.exports = (file) ->
   for file in files
     if fs.existsSync(file)
       settings = _.deepExtend settings, JSON.parse fs.readFileSync file, {encoding: "UTF-8"}
-  console.log settings
   settings
