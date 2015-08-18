@@ -7,7 +7,10 @@ module.exports = (file) ->
   settings = {}
   splinters = parse file
   files = [
-    file
+    "#{splinters.dir}/all.#{splinters.ext}"
+    "#{splinters.dir}/all.specific#{splinters.ext}"
+    "#{splinters.dir}/all.local#{splinters.ext}"
+    "#{splinters.dir}/#{splinters.name}#{splinters.ext}" # file itself
     "#{splinters.dir}/#{splinters.name}.specific#{splinters.ext}"
     "#{splinters.dir}/#{splinters.name}.local#{splinters.ext}"
     "#{process.env[if process.platform is "win32" then "USERPROFILE" else "HOME"]}/.fixin/settings/#{splinters.name}.private#{splinters.ext}"
