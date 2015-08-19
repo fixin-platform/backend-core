@@ -14,22 +14,32 @@ class UpsertThroughTemporaryTable extends Save
     @temporaryModel::tableName = @bufferTableName
 
   execute: ->
-    inserts = []
     @knex.transaction (trx) =>
       Promise.bind(@)
       .then -> @progressBarSetTotal(0)
       .then -> @init(trx)
       .then ->
         new Promise (resolve, reject) =>
+          scheduledInsertCounter = 0
+          completedInsertCounter = 0
+          isStreamEnded = false
+          tryToResolve = -> # pending inserts may complete before the stream has actually ended, so let's wait for both conditions until resolving the promise
+            if isStreamEnded and completedInsertCounter >= scheduledInsertCounter
+              resolve(completedInsertCounter)
           @in.on "readable", =>
-            while (object = @in.read()) isnt null # result may also be false, so we can't write `while (result = @in.read())`
-              inserts.push @insert(trx, object) if object
+            while (object = @in.read())
+              scheduledInsertCounter++
+              @insert(trx, object)
+              .then ->
+                completedInsertCounter++
+                tryToResolve()
             true
-          @in.on "end", -> resolve(inserts)
+          @in.on "end", ->
+            isStreamEnded = true
+            tryToResolve()
           @in.on "error", reject
-      .all() # wait for objects to be inserted
-      .then -> @save(trx)
-      .then -> {count: inserts.length}
+      .then (count) -> @save(trx).thenReturn(count)
+      .then (count) -> {count: count}
 
   init: (trx) ->
     Promise.bind(@)
