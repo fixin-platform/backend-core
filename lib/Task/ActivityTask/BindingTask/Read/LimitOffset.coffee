@@ -23,7 +23,6 @@ class LimitOffset extends Read
     .then @getTotal
     .then @progressBarSetTotal
     .then @readChapter
-    .all()
     .then -> @out.end()
     .then -> {}
 
@@ -31,9 +30,12 @@ class LimitOffset extends Read
     offset = @offset
     pages = []
     while offset <= total
-      pages.push @readPage(@limit, offset)
+      pages.push [@limit, offset]
       offset += @limit
-    pages
+    Promise.resolve(pages).bind(@)
+    .map (args) ->
+      @readPage(args...)
+    , {concurrency: 10}
 
   getTotal: ->
     params = @getTotalParams()
@@ -48,7 +50,7 @@ class LimitOffset extends Read
     @info "LimitOffset:readPageRequest", @details({params: params})
     @getPageRequest(params).bind(@)
     .spread (response, body) ->
-      @info "LimitOffset:readPageResponse", @details({params: params, response: response.toJSON(), body: body})
+      @verbose "LimitOffset:readPageResponse", @details({params: params, response: response.toJSON(), body: body})
       @out.write(object) for object in body
       @progressBarIncCurrent(body.length)
       [response, body]
