@@ -19,6 +19,9 @@ class Download extends ActivityTask
     @save.progressBarIncCurrent = @progressBarIncCurrent.bind(@)
 
   execute: ->
-    Promise.join(@read.execute(), @save.execute())
+    Promise.props(
+      read: @read.execute()
+      save: @save.execute()
+    )
 
 module.exports = Download
