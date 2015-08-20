@@ -17,6 +17,7 @@ class LimitOffset extends Read
   getPageRequest: (params) -> throw new Error("Implement me!")
 
   execute: ->
+    @count = 0
     Promise.bind(@)
     .then @acquireCredential
     .then -> @progressBarIncCurrent(0)
@@ -24,7 +25,7 @@ class LimitOffset extends Read
     .then @progressBarSetTotal
     .then @readChapter
     .then -> @out.end()
-    .then -> {}
+    .then -> {count: @count}
 
   readChapter: (total) ->
     offset = @offset
@@ -53,6 +54,7 @@ class LimitOffset extends Read
       @verbose "LimitOffset:readPageResponse", @details({params: params, response: response.toJSON(), body: body})
       @out.write(object) for object in body
       @progressBarIncCurrent(body.length)
+      @count += body.length
       [response, body]
 
 module.exports = LimitOffset
