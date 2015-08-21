@@ -13,13 +13,14 @@ class OptimisticLookahead extends Read
     Promise.bind(@)
     .then @acquireCredential
     .then -> @progressBarSetTotal(0) # known to be unknown
-    .then -> new Promise (resolve, reject) =>
-      @reject = reject
-      @resolve = resolve
-      @chapterPromises = []
-      @jumpToChapter(@chapterStart)
-      @readChapter()
-      return null # don't leak Promise; will resolve manually
+    .then ->
+      new Promise (resolve, reject) =>
+        @reject = reject
+        @resolve = resolve
+        @chapterPromises = []
+        @jumpToChapter(@chapterStart)
+        @readChapter()
+        return null # don't leak Promise; will resolve manually
     .then -> {count: @count}
   readChapter: ->
     promises = @getChapterPromises()
