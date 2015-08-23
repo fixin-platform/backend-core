@@ -70,7 +70,7 @@ class DecisionTask extends Task
     @removeUpdate update for update in executionContext.updates
 
   DecisionTaskTimedOut: (event, attributes) -> # noop
-    # We shouldn't re-schedule the decision task, because SWF have already re-scheduled it
+    # We shouldn't re-schedule the decision task, because SWF has already re-scheduled it
     @info "DecisionTask:DecisionTaskTimedOut", @details({event: event, attributes: attributes})
 
   ActivityTaskStarted: (event, attributes) -> # noop
