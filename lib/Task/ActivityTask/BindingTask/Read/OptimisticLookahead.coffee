@@ -12,7 +12,6 @@ class OptimisticLookahead extends Read
     @count = 0
     Promise.bind(@)
     .then @acquireCredential
-    .then -> @progressBarSetTotal(0) # known to be unknown
     .then ->
       new Promise (resolve, reject) =>
         @reject = reject
