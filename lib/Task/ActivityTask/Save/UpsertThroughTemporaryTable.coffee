@@ -16,7 +16,7 @@ class UpsertThroughTemporaryTable extends Save
   execute: ->
     @knex.transaction (trx) =>
       Promise.bind(@)
-      .then -> @progressBarSetTotal(0)
+      .then -> @progressBarIncCurrent(0)
       .then -> @init(trx)
       .then ->
         new Promise (resolve, reject) =>
