@@ -21,5 +21,4 @@ module.exports = (settings, handle) ->
     mongodb: get: _.memoize -> createMongoDB dependencies.settings.mongodb
     swf: get: _.memoize -> createSWF dependencies.settings.swf
     logger: get: _.memoize -> createLogger dependencies.settings.logger
-    memwatch: get: _.memoize -> require "./memwatch"
   dependencies

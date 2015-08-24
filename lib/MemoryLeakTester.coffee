@@ -1,4 +1,5 @@
 _ = require "underscore"
+Promise = require "bluebird"
 Match = require "mtr-match"
 
 class MemoryLeakTester
