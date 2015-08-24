@@ -10,7 +10,7 @@ describe "WorkflowExecutionHistoryGenerator", ->
 
   describe "events", ->
 
-    it "should support WorkflowExecutionStarted", ->
+    it "should support WorkflowExecutionStarted @fast", ->
       generator.WorkflowExecutionStarted(
         chunks: [
           message: "h e l l o"
@@ -34,7 +34,7 @@ describe "WorkflowExecutionHistoryGenerator", ->
 
   describe "decisions", ->
 
-    it "should support CompleteWorkflowExecution", ->
+    it "should support CompleteWorkflowExecution @fast", ->
       generator.CompleteWorkflowExecution(
         chunks: [
           message: "h e l l o"
@@ -49,7 +49,7 @@ describe "WorkflowExecutionHistoryGenerator", ->
 
   describe "features", ->
 
-    it "should support event lookups", ->
+    it "should support event lookups @fast", ->
       generator.seed -> [
         events: [
           @WorkflowExecutionStarted
@@ -91,7 +91,7 @@ describe "WorkflowExecutionHistoryGenerator", ->
 
   describe "histories", ->
 
-    it "should generate simple history", ->
+    it "should generate simple history @fast", ->
       generator.seed -> [
         events: [
           @WorkflowExecutionStarted
@@ -152,7 +152,7 @@ describe "WorkflowExecutionHistoryGenerator", ->
         ]
       ]
 
-  it "should run complex history", ->
+  it "should run complex history @fast", ->
     generator.seed -> [
       events: [
         @WorkflowExecutionStarted

@@ -12,6 +12,14 @@ errors.create
   defaultResponse: "Go implement the method already"
 
 errors.create
+  name: "MemoryLeakError"
+  defaultMessage: "This code seems to leak memory"
+  defaultExplanation: """
+    * Try going through https://speakerdeck.com/addyosmani/javascript-memory-management-masterclass"
+    * After you identify the memory leak pattern, add it first through MemoryLeakTesterSpec (to make sure it actually leaks)
+  """
+
+errors.create
   name: "EventHandlerNotImplementedError"
   defaultExplanation: "The implementor of this decision task hasn't anticipated such event type"
   defaultResponse: "Find out who implemented this decision task via `git log` and talk to him - OR - figure it out yourself"

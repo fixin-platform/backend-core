@@ -1,6 +1,8 @@
 _ = require "underscore"
 Promise = require "bluebird"
 Match = require "mtr-match"
+profiler = require "v8-profiler" # needs to be required, doesn't need to be used
+errors = require "../helper/errors"
 
 class MemoryLeakTester
   constructor: (options) ->
@@ -13,17 +15,27 @@ class MemoryLeakTester
       currentLoops: 0
       maxLoops: 10000
       currentLoopsWithoutIncrease: 0
-      minLoopsWithoutIncrease: 1000
+      minLoopsWithoutIncrease: 1000 # an empty Promise memory leak has only manifested after ~800 measurements
+    _.bindAll @, "loop", "measure"
   execute: ->
     new Promise (resolve, reject) =>
       @resolve = resolve
       @reject = reject
-      setTimeout(@loop.bind(@))
+      setTimeout(@loop)
   loop: ->
-    @runner()
-    @currentRss = process.memoryUsage().rss
+    result = @runner()
+    if result?.then
+      result.then @measure
+    else
+      @measure()
+    null
+  measure: ->
+    memoryUsage = process.memoryUsage()
+    @currentRss = memoryUsage.rss
+#    console.log @currentRss, @previousRss
     if @currentRss > @previousRss
-#      console.log @currentLoopsWithoutIncrease
+      console.log @currentLoopsWithoutIncrease
+      console.log memoryUsage
       @previousRss = @currentRss
       @currentLoopsWithoutIncrease = 0
     else
@@ -31,10 +43,11 @@ class MemoryLeakTester
       if @currentLoopsWithoutIncrease > @minLoopsWithoutIncrease
         return @resolve(@currentLoops)
     @currentLoops++
-    if @currentLoops > @maxLoops
-      return @reject(new Error("Most probably, this code leaks memory"))
+    if @currentLoops > @maxLoops - @minLoopsWithoutIncrease # not enough loops left to satisfy the @minLoopsWithoutIncrease condition
+      return @reject(new errors.MemoryLeakError())
     else
       # each loop needs to be done on separate Node.js event loop iteration, to free memory allocated by console.log
-      setTimeout(@loop.bind(@))
+      setTimeout(@loop)
+    null
 
 module.exports = MemoryLeakTester

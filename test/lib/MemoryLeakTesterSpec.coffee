@@ -4,37 +4,65 @@ Promise = require "bluebird"
 MemoryLeakTester = require "../../lib/MemoryLeakTester"
 
 describe "MemoryLeakTester", ->
-  @timeout(60000)
+  @timeout(10000000)
 
-  tests =
+  patterns =
 
-    "noop":
+    "noop @plain":
       isLeaky: false
-      runner: ->
+      options:
+        maxLoops: 100000
+        minLoopsWithoutIncrease: 20000
+        runner: ->
 
-    "local var":
+    "noop @promise":
       isLeaky: false
-      runner: ->
-        a = new Array(100000).join("*")
+      options:
+        maxLoops: 100000
+        minLoopsWithoutIncrease: 20000
+        runner: ->
+          Promise.resolve()
 
-    "global array push with periodic reset":
+    "local var @promise":
       isLeaky: false
-      runner: ->
-        global.array ?= []
-        global.array.push new Array(10000).join("*")
-        if global.array.length > 234
-          global.array = []
+      options:
+        maxLoops: 100000
+        minLoopsWithoutIncrease: 20000
+        runner: ->
+          Promise.resolve()
+          .then ->
+            a = new Array(100000).join("*")
+            null
 
-    "global array push":
+    "global array push with periodic reset @promise":
+      isLeaky: false
+      options:
+        runner: ->
+          Promise.resolve()
+          .then ->
+            global.array ?= []
+            global.array.push new Array(10000).join("*")
+            if global.array.length > 234
+              global.array = []
+
+    "global array push @promise":
       isLeaky: true
-      runner: ->
-        global.array ?= []
-        global.array.push new Array(10000).join("*")
+      options:
+        runner: ->
+          Promise.resolve()
+          .then ->
+            global.array ?= []
+            global.array.push new Array(10000).join("*")
 
-  for name, test of tests
-    do (name, test) ->
-      it "should#{if not test.isLeaky then "n't" else ""} report a leak for \"#{name}\"", ->
-        tester = new MemoryLeakTester(
-          runner: test.runner
-        )
-        tester.execute().should.be[if not test.isLeaky then "fulfilled" else "rejected"]
+  for name, pattern of patterns
+    do (name, pattern) ->
+      it "should#{if not pattern.isLeaky then "n't" else ""} report a leak for #{name} @slow", ->
+        tester = new MemoryLeakTester(pattern.options)
+        promise = tester.execute()
+        if not pattern.isLeaky
+          promise
+        else
+          promise
+          .then -> reject(new Error("Expected the MemoryLeakTester to report a leak, but it didn't"))
+          .catch (error) -> should.exist(error)
+#        tester.execute().should.be[if not pattern.isLeaky then "fulfilled" else "rejected"]
