@@ -37,6 +37,7 @@ describe "MemoryLeakTester", ->
     "global array push with periodic reset @promise":
       isLeaky: false
       options:
+        maxLoops: 100000
         runner: ->
           Promise.resolve()
           .then ->
