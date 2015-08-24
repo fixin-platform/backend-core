@@ -3,7 +3,7 @@ Promise = require "bluebird"
 dargs = require "dargs"
 {spawn} = require("child_process")
 
-module.exports = (path, options, args, spawnOptions) ->
+module.exports = (path, options = {}, args = [], spawnOptions = {}) ->
   _.defaults options,
     settings: "#{process.env.ROOT_DIR}/settings/test.json"
     domain: "Test"
