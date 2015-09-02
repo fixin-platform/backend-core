@@ -7,8 +7,10 @@ class UpsertThroughTemporaryTable extends Save
   constructor: (input, options, dependencies) ->
     _.defaults input,
       bufferTableName: "UpsertData"
+      idFieldName: "_uid"
     Match.check input, Match.ObjectIncluding
       bufferTableName: String
+      idFieldName: String
     super
     @temporaryModel = @createModel()
     @temporaryModel::tableName = @bufferTableName
@@ -70,15 +72,15 @@ class UpsertThroughTemporaryTable extends Save
               UPDATE "#{@model::tableName}" AS storage
               SET #{@getUpdateColumns("buffer")}
               FROM "#{@bufferTableName}" AS buffer
-              WHERE storage."_uid" = buffer."_uid" AND storage."_avatarId" = buffer."_avatarId"
+              WHERE storage."#{@idFieldName}" = buffer."#{@idFieldName}" AND storage."_avatarId" = buffer."_avatarId"
             """)
       .then ->
         trx.raw("""
               INSERT INTO "#{@model::tableName}"
               SELECT buffer.*
               FROM "#{@bufferTableName}" AS buffer
-              LEFT OUTER JOIN "#{@model::tableName}" as storage ON (buffer."_uid" = storage."_uid" AND buffer."_avatarId" = storage."_avatarId")
-              WHERE storage."_uid" IS NULL
+              LEFT OUTER JOIN "#{@model::tableName}" as storage ON (buffer."#{@idFieldName}" = storage."#{@idFieldName}" AND buffer."_avatarId" = storage."_avatarId")
+              WHERE storage."#{@idFieldName}" IS NULL
             """)
 #      .then ->
 #        trx.raw("""
