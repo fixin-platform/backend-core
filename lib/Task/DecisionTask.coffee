@@ -176,9 +176,21 @@ class DecisionTask extends Task
           @["#{name}BarrierPassed"]()
 
   # progress helpers
-  commandSetIsStarted: (commandId) -> [{_id: commandId}, {$set: {isStarted: true}}]
-  commandSetIsCompleted: (commandId) -> [{_id: commandId}, {$set: {isCompleted: true}}]
-  commandSetIsFailed: (commandId) -> [{_id: commandId}, {$set: {isFailed: true}}]
-  commandSetResult: (commandId, result) -> [{_id: commandId}, {$set: {result: result}}]
+  commandSetIsStarted: (commandId) ->
+    collection: "Commands"
+    selector: {_id: commandId}
+    modifier: {$set: {isStarted: true}}
+  commandSetIsCompleted: (commandId) ->
+    collection: "Commands"
+    selector: {_id: commandId}
+    modifier: {$set: {isCompleted: true}}
+  commandSetIsFailed: (commandId) ->
+    collection: "Commands"
+    selector: {_id: commandId}
+    modifier: {$set: {isFailed: true}}
+  commandSetResult: (commandId, result) ->
+    collection: "Commands"
+    selector: {_id: commandId}
+    modifier: {$set: {result: result}}
 
 module.exports = DecisionTask

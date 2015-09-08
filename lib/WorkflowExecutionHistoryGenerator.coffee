@@ -25,7 +25,11 @@ class WorkflowExecutionHistoryGenerator
     Match.check root,
       events: [Object]
       decisions: [Object]
-      updates: [[Object]]
+      updates: [
+        collection: String
+        selector: Object
+        modifier: Object
+      ]
       branches: Match.Optional [Object]
     events = _.deepClone root.events
     decisions = _.deepClone root.decisions
@@ -258,10 +262,22 @@ class WorkflowExecutionHistoryGenerator
         decisionType: "CancelWorkflowExecution"
       , options
     )
-  commandSetIsStarted: (commandId) -> [{_id: commandId}, {$set: {isStarted: true}}]
-  commandSetIsCompleted: (commandId) -> [{_id: commandId}, {$set: {isCompleted: true}}]
-  commandSetIsFailed: (commandId) -> [{_id: commandId}, {$set: {isFailed: true}}]
-  commandSetResult: (commandId, result) -> [{_id: commandId}, {$set: {result: result}}]
+  commandSetIsStarted: (commandId) ->
+    collection: "Commands"
+    selector: {_id: commandId}
+    modifier: {$set: {isStarted: true}}
+  commandSetIsCompleted: (commandId) ->
+    collection: "Commands"
+    selector: {_id: commandId}
+    modifier: {$set: {isCompleted: true}}
+  commandSetIsFailed: (commandId) ->
+    collection: "Commands"
+    selector: {_id: commandId}
+    modifier: {$set: {isFailed: true}}
+  commandSetResult: (commandId, result) ->
+    collection: "Commands"
+    selector: {_id: commandId}
+    modifier: {$set: {result: result}}
   remappedEventTypes:
     "ActivityTaskStarted": [
       fromMatchField: "activityTaskScheduledEventAttributes.activityId"
