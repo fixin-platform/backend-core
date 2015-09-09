@@ -76,11 +76,9 @@ describe "WorkflowExecutionHistoryGenerator", ->
       histories[1].events[3].eventType.should.be.equal("DecisionTaskCompleted")
       histories[1].events[3].decisionTaskCompletedEventAttributes.executionContext.should.be.equal JSON.stringify
         updates: [
-          [
-            _id: commandId
-          ,
-            $set: {isStarted: true}
-          ]
+          collection: "Commands"
+          selector: {_id: commandId}
+          modifier: {$set: {isStarted: true}}
         ]
       histories[1].events[4].eventType.should.be.equal("ActivityTaskScheduled")
       histories[1].events[5].eventType.should.be.equal("ActivityTaskStarted")
@@ -144,11 +142,9 @@ describe "WorkflowExecutionHistoryGenerator", ->
               params: {}
         ]
         updates: [
-          [
-            _id: commandId
-          ,
-            $set: {isStarted: true}
-          ]
+          collection: "Commands"
+          selector: {_id: commandId}
+          modifier: {$set: {isStarted: true}}
         ]
       ]
 
