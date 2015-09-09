@@ -143,7 +143,7 @@ class DecisionTask extends Task
   addUpdate: (update) ->
     @updates.push update
   removeUpdate: (updateBlueprint) ->
-    index = @findIndex @updates, (update) -> _.isEqual update, updateBlueprint
+    index = _.findIndex @updates, (update) -> _.isEqual update, updateBlueprint
     throw new errors.RuntimeError(
       message: "Can't find an update to remove"
     ) if not ~index
