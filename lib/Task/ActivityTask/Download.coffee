@@ -2,26 +2,49 @@ _ = require "underscore"
 Promise = require "bluebird"
 stream = require "readable-stream"
 Match = require "mtr-match"
-stamp = require "../../../helper/stamp"
 ActivityTask = require "../ActivityTask"
-Read = require "./BindingTask/Read"
-Save = require "./Save"
+Read = require "../../Strategy/APIStrategy/Read"
+Save = require "../../Strategy/DBStrategy/Save"
 
 class Download extends ActivityTask
-  constructor: (input, options, streams, dependencies) ->
-    super
-    Match.check @read, Read
-    Match.check @save, Save
-    @save.in = @read.out = new stream.PassThrough({objectMode: true})
-    @read.progressBarSetTotal = @progressBarSetTotal.bind(@)
-    @read.progressBarIncCurrent = (inc) -> Promise.resolve(inc) # essentially noop
-    @save.progressBarSetTotal = (total) -> Promise.resolve(total) # essentially noop
-    @save.progressBarIncCurrent = @progressBarIncCurrent.bind(@)
-
   execute: ->
-    Promise.props(
-      read: @read.execute()
-      save: @save.execute()
-    )
+    read = @createReadStrategy()
+    save = @createSaveStrategy()
+    save.on "ready", read.execute.bind(read)
+    read.on "object", save.insert.bind(save)
+    save.on "insert", @progressBarIncCurrent.bind(@, 1)
+    read.on "total", @progressBarSetTotal.bind(@)
+    Promise.bind(@)
+    .then -> @progressBarIncCurrent(0)
+    .then -> save.execute()
+
+  createReadStrategy: -> throw new Error("Implement me!")
+  createSaveStrategy: -> throw new Error("Implement me!")
+
+
+#    read.execute()
+#      save: save.execute()
+#    readLinks = new Read()
+#    readReferers = new Read()
+#    saveLink = new Save(
+#      bufferTableName: "BitlyLinkUpsertData"
+#    )
+#    saveReferers = new Save(
+#      bufferTableName: "BitlyReferersUpsertData"
+#    )
+#    readLinks.mapObject = (link) ->
+#      Promise.join(
+#        @binding.getClicks(link.id).then (clicks) ->
+#          link.clicks = clicks
+#          saveLink.execute(link)
+#      ,
+#        @binding.getReferers(link)
+#      ,
+#        (linkId, referers) ->
+#          referer.linkId = linkId for referer in referers
+#          saveReferers.execute(referers)
+#      )
+#
+#    readLinks.execute()
 
 module.exports = Download

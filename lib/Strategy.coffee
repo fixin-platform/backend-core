@@ -2,10 +2,10 @@ _ = require "underscore"
 Promise = require "bluebird"
 Match = require "mtr-match"
 
-class Task
+class Strategy
   constructor: (options, dependencies) ->
     _.extend @, options
-    @dependencies = dependencies
+    @listeners = {}
     # trigger getters
     @logger = dependencies.logger
     Match.check @logger, Match.Any
@@ -15,4 +15,12 @@ class Task
   details: (details) -> _.defaults details, _.pick(@, @signature())
   signature: -> throw new Error("Implement me!")
 
-module.exports = Task
+  on: (event, handler) ->
+    @listeners[event] ?= []
+    @listeners[event].push handler
+
+  emit: (event, args...) ->
+    return Promise.resolve() unless @listeners[event]?.length
+    Promise.all(listener(args...) for listener in @listeners[event])
+
+module.exports = Strategy

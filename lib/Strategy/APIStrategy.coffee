@@ -1,19 +1,26 @@
 _ = require "underscore"
 Promise = require "bluebird"
-errors = require "../../../../helper/errors"
+errors = require "../../../helper/errors"
 Match = require "mtr-match"
-ActivityTask = require "../ActivityTask"
+Strategy = require "../Strategy"
+Binding = require "../../lib/Binding"
 
-class BindingTask extends ActivityTask
-  constructor: (input, options, streams, dependencies) ->
+class APIStrategy extends Strategy
+  constructor: (input, dependencies) ->
     Match.check input, Match.ObjectIncluding
       avatarId: String
-    super
     @binding = @createBinding()
+    @mongodb = dependencies.mongodb
+    Match.check @mongodb, Match.Any
+    super
 
-  acquireCredential: ->
+  execute: (input) ->
+    Promise.bind(@)
+    .then
+
+  acquireCredential: (avatarId) ->
     selector =
-      avatarId: @avatarId
+      avatarId: avatarId
       api: @binding.api
       scopes: {$all: @binding.scopes}
     Promise.bind(@)
@@ -26,6 +33,6 @@ class BindingTask extends ActivityTask
       @binding.setCredential(credential)
       @binding
 
-  createBinding: -> throw new Error("Implement me!")
+  createBinding: ->
 
-module.exports = BindingTask
+module.exports = APIStrategy

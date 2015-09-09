@@ -1,9 +1,9 @@
 _ = require "underscore"
-ActivityTask = require "../ActivityTask"
+Strategy = require "../DBStrategy"
 Match = require "mtr-match"
 
-class Save extends ActivityTask
-  constructor: (input, options, streams, dependencies) ->
+class Save extends Strategy
+  constructor: (input, dependencies) ->
     Match.check input, Match.ObjectIncluding
       avatarId: String
     super

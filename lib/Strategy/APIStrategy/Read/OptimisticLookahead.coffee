@@ -3,13 +3,12 @@ Promise = require "bluebird"
 Read = require "../Read"
 
 class OptimisticLookahead extends Read
-  constructor: (input, options, streams, dependencies) ->
+  constructor: (input, dependencies) ->
     _.defaults input,
       chapterSize: 10
       chapterStart: 1
     super
-  execute: ->
-    @count = 0
+  execute: (input) ->
     Promise.bind(@)
     .then @acquireCredential
     .then ->
@@ -19,8 +18,7 @@ class OptimisticLookahead extends Read
         @chapterPromises = []
         @jumpToChapter(@chapterStart)
         @readChapter()
-        return null # don't leak Promise; will resolve manually
-    .then -> {count: @count}
+        return null # don't leak Promise from @readChapter(); will resolve manually
   readChapter: ->
     promises = @getChapterPromises()
     promises[0] = promises[0].spread (response, body) ->
@@ -37,7 +35,6 @@ class OptimisticLookahead extends Read
     )
   end: ->
     Promise.all(@chapterPromises).bind(@)
-    .then -> @out.end()
     .then @resolve
     return null # break infinite loop
   jumpToChapter: (chapterStart) ->
@@ -48,12 +45,12 @@ class OptimisticLookahead extends Read
   readPage: (page) ->
     @getPage(page).bind(@)
     .spread (response, body) ->
-      @out.write(object) for object in body
-      @progressBarIncCurrent(body.length)
-      @count += body.length
-      [response, body]
+      Promise.resolve(body).bind(@)
+      .map (object) -> @emit "object", object
+      .thenReturn([response, body])
 
   shouldReadNextChapter: (response, body) -> throw new Error("Implement me!")
   getPage: (page) -> throw new Error("Implement me!")
+  processObject: (object) -> throw new Error("Implement me!")
 
 module.exports = OptimisticLookahead

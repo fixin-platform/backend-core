@@ -1,7 +1,6 @@
 _ = require "underscore"
 Promise = require "bluebird"
 Match = require "mtr-match"
-profiler = require "v8-profiler" # needs to be required, doesn't need to be used
 errors = require "../helper/errors"
 
 class MemoryLeakTester
