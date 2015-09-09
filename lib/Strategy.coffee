@@ -7,8 +7,6 @@ class Strategy
     _.extend @, options
     @listeners = {}
     # trigger getters
-    console.log dependencies.logger
-
     @logger = dependencies.logger
     Match.check @logger, Match.Any
     log = @log
