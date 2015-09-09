@@ -18,6 +18,7 @@ class ActivityTask extends Task
       commonKeys: commonKeys
     ) if commonKeys.length
     _.extend @, input
+    @input = input
     @mongodb = dependencies.mongodb
     Match.check @mongodb, Match.Any
 
