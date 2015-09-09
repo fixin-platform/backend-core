@@ -14,13 +14,9 @@ class APIStrategy extends Strategy
     Match.check @mongodb, Match.Any
     super
 
-  execute: (input) ->
-    Promise.bind(@)
-    .then
-
-  acquireCredential: (avatarId) ->
+  acquireCredential: ->
     selector =
-      avatarId: avatarId
+      avatarId: @avatarId
       api: @binding.api
       scopes: {$all: @binding.scopes}
     Promise.bind(@)
