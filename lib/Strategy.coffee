@@ -7,6 +7,8 @@ class Strategy
     _.extend @, options
     @listeners = {}
     # trigger getters
+    console.log dependencies.logger
+
     @logger = dependencies.logger
     Match.check @logger, Match.Any
     log = @log
@@ -16,10 +18,13 @@ class Strategy
   signature: -> throw new Error("Implement me!")
 
   on: (event, handler) ->
+    Match.check(event, String)
+    Match.check(handler, Function)
     @listeners[event] ?= []
     @listeners[event].push handler
 
   emit: (event, args...) ->
+    Match.check(event, String)
     return Promise.resolve() unless @listeners[event]?.length
     Promise.all(listener(args...) for listener in @listeners[event])
 

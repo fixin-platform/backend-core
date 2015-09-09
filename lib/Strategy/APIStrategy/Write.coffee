@@ -1,6 +1,6 @@
-BindingTask = require "../APIStrategy"
+APIStrategy = require "../APIStrategy"
 
-class Write extends BindingTask
+class Write extends APIStrategy
   signature: -> ["params"]
 
 module.exports = Write

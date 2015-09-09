@@ -4,7 +4,7 @@ Read = require "../Read"
 
 # It seems like this algorithm hangs for a while, then dump all downloaded info, but under heavy load, it dumps steadily, so most probably it's just some issue with stdout flush delay (caching or something)
 class LimitOffset extends Read
-  constructor: (input, options, dependencies) ->
+  constructor: (input, dependencies) ->
     _.defaults input,
       limit: 100
       offset: 0
@@ -17,15 +17,10 @@ class LimitOffset extends Read
   getPageRequest: (params) -> throw new Error("Implement me!")
 
   execute: ->
-    @count = 0
     Promise.bind(@)
     .then @acquireCredential
-    .then -> @progressBarIncCurrent(0)
     .then @getTotal
-    .then @progressBarSetTotal
     .then @readChapter
-    .then -> @out.end()
-    .then -> {count: @count}
 
   readChapter: (total) ->
     offset = @offset
@@ -44,7 +39,9 @@ class LimitOffset extends Read
     @getTotalRequest(params).bind(@)
     .spread (response, body) ->
       @info "LimitOffset:getTotalResponse", @details({params: params, response: response.toJSON(), body: body})
-      @extractTotalFromResponse(response, body)
+      total = @extractTotalFromResponse(response, body)
+      @emit("total", total)
+      .thenReturn(total)
 
   readPage: (limit, offset) ->
     params = @getPageParams(limit, offset)
@@ -52,9 +49,7 @@ class LimitOffset extends Read
     @getPageRequest(params).bind(@)
     .spread (response, body) ->
       @verbose "LimitOffset:readPageResponse", @details({params: params, response: response.toJSON(), body: body})
-      @out.write(object) for object in body
-      @progressBarIncCurrent(body.length)
-      @count += body.length
-      [response, body]
+      Promise.all(@emit("object", object) for object in body)
+      .thenReturn([response, body])
 
 module.exports = LimitOffset
