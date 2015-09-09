@@ -29,6 +29,6 @@ class APIStrategy extends Strategy
       @binding.setCredential(credential)
       @binding
 
-  createBinding: ->
+  createBinding: -> throw new Error("Implement me!")
 
 module.exports = APIStrategy

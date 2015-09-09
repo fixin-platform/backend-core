@@ -18,11 +18,12 @@ class ActivityTask extends Task
       commonKeys: commonKeys
     ) if commonKeys.length
     _.extend @, input
+    @input = input
     @mongodb = dependencies.mongodb
     Match.check @mongodb, Match.Any
 
-  progressBarSetTotal: (total) -> @mongodb.collection("Commands").update({_id: @commandId, "progressBars.activityId": @activityId}, {$set: {"progressBars.$.total": total}}).then -> total
-  progressBarIncCurrent: (inc) -> @mongodb.collection("Commands").update({_id: @commandId, "progressBars.activityId": @activityId}, {$inc: {"progressBars.$.current": inc}}).then -> inc
+  progressBarSetTotal: (total) -> Promise.resolve(@mongodb.collection("Commands").update({_id: @commandId, "progressBars.activityId": @activityId}, {$set: {"progressBars.$.total": total}})).thenReturn(total)
+  progressBarIncCurrent: (inc) -> Promise.resolve(@mongodb.collection("Commands").update({_id: @commandId, "progressBars.activityId": @activityId}, {$inc: {"progressBars.$.current": inc}})).thenReturn(inc)
   # NOTE: progressBarIncCurrent shouldn't be called for each object, because it will result in a flood of DB writes; instead, progressBarIncCurrent should be called in batches (e.g. for each page)
 
   execute: -> throw new Error("Implement me!")
