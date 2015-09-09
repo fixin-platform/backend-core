@@ -12,8 +12,8 @@ describe "WorkflowExecutionHistoryGenerator", ->
 
     it "should support WorkflowExecutionStarted @fast", ->
       generator.WorkflowExecutionStarted(
-        chunks: [
-          message: "h e l l o"
+        messages: [
+          "h e l l o"
         ]
       ,
         executionStartToCloseTimeout: 3600000
@@ -26,8 +26,8 @@ describe "WorkflowExecutionHistoryGenerator", ->
         eventTimestamp: null
         workflowExecutionStartedEventAttributes:
           input: JSON.stringify
-            chunks: [
-              message: "h e l l o"
+            messages: [
+              "h e l l o"
             ]
           executionStartToCloseTimeout: 3600000
           childPolicy: "REQUEST_CANCEL"
@@ -36,15 +36,15 @@ describe "WorkflowExecutionHistoryGenerator", ->
 
     it "should support CompleteWorkflowExecution @fast", ->
       generator.CompleteWorkflowExecution(
-        chunks: [
-          message: "h e l l o"
+        messages: [
+          "h e l l o"
         ]
       ).should.be.deep.equal
         decisionType: "CompleteWorkflowExecution"
         completeWorkflowExecutionDecisionAttributes:
           result: JSON.stringify
-            chunks: [
-              message: "h e l l o"
+            messages: [
+              "h e l l o"
             ]
 
   describe "features", ->
@@ -53,8 +53,8 @@ describe "WorkflowExecutionHistoryGenerator", ->
       generator.seed -> [
         events: [
           @WorkflowExecutionStarted
-            chunks: [
-              message: "h e l l o"
+            messages: [
+              "h e l l o"
             ]
         ]
         decisions: [
@@ -93,8 +93,8 @@ describe "WorkflowExecutionHistoryGenerator", ->
       generator.seed -> [
         events: [
           @WorkflowExecutionStarted
-            chunks: [
-              message: "h e l l o"
+            messages: [
+              "h e l l o"
             ]
         ]
         decisions: [
@@ -116,8 +116,8 @@ describe "WorkflowExecutionHistoryGenerator", ->
           eventTimestamp: 1420000000.123
           workflowExecutionStartedEventAttributes:
             input: JSON.stringify
-              chunks: [
-                message: "h e l l o"
+              messages: [
+                "h e l l o"
               ]
         ,
           eventType: "DecisionTaskScheduled"
