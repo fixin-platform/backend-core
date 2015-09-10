@@ -22,7 +22,7 @@ class DecisionTask extends Task
         @decisions = []
         @updates = []
         for event in @events
-          @info "DecisionTask:processEvent", @details({event: event})
+          @verbose "DecisionTask:processEvent", @details({event: event})
           if @[event.eventType]
             attributes = _.deepClone @eventAttributes(event)
             args = [event, attributes]

@@ -35,17 +35,17 @@ class LimitOffset extends Read
 
   getTotal: ->
     params = @getTotalParams()
-    @info "LimitOffset:getTotalRequest", @details({params: params})
+    @verbose "LimitOffset:getTotalRequest", @details({params: params})
     @getTotalRequest(params).bind(@)
     .spread (response, body) ->
-      @info "LimitOffset:getTotalResponse", @details({params: params, response: response.toJSON(), body: body})
+      @verbose "LimitOffset:getTotalResponse", @details({params: params, response: response.toJSON(), body: body})
       total = @extractTotalFromResponse(response, body)
       @emit("total", total)
       .thenReturn(total)
 
   readPage: (limit, offset) ->
     params = @getPageParams(limit, offset)
-    @info "LimitOffset:readPageRequest", @details({params: params})
+    @verbose "LimitOffset:readPageRequest", @details({params: params})
     @getPageRequest(params).bind(@)
     .spread (response, body) ->
       @verbose "LimitOffset:readPageResponse", @details({params: params, response: response.toJSON(), body: body})
