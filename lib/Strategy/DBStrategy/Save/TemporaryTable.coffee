@@ -16,12 +16,17 @@ class TemporaryTable extends Save
     @temporaryModel::tableName = @bufferTableName
 
   execute: ->
-    @knex.transaction (transaction) =>
+    handler = (transaction) =>
       @transaction = transaction
       Promise.bind(@)
       .then -> @init()
       .then -> @emit("ready")
       .then -> @upsert()
+    if @transaction
+      Promise.resolve(@transaction)
+      .then handler
+    else
+      @knex.transaction handler
 
   init: ->
     Promise.bind(@)
