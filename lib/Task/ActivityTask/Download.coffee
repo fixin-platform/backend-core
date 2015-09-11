@@ -7,16 +7,23 @@ Read = require "../../Strategy/APIStrategy/Read"
 Save = require "../../Strategy/DBStrategy/Save"
 
 class Download extends ActivityTask
+  constructor: (input, options, dependencies) ->
+    super
+    @knex = dependencies.knex
+
   execute: ->
-    read = @createReadStrategy()
-    save = @createSaveStrategy()
-    save.on "ready", read.execute.bind(read)
-    read.on "object", save.insert.bind(save)
-    save.on "insert", @progressBarIncCurrent.bind(@, 1)
-    read.on "total", @progressBarSetTotal.bind(@)
-    Promise.bind(@)
-    .then -> @progressBarIncCurrent(0)
-    .then -> save.execute()
+    @knex.transaction (transaction) =>
+      read = @createReadStrategy()
+      save = @createSaveStrategy()
+      read.on "object", save.insert.bind(save)
+      read.on "total", @progressBarSetTotal.bind(@)
+      save.on "insert", @progressBarIncCurrent.bind(@, 1)
+      save.transaction = transaction
+      Promise.bind(@)
+      .then -> @progressBarIncCurrent(0)
+      .then -> save.start()
+      .then -> read.execute()
+      .then -> save.finish()
 
   createReadStrategy: -> throw new Error("Implement me!")
   createSaveStrategy: -> throw new Error("Implement me!")

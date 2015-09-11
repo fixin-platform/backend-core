@@ -15,19 +15,7 @@ class TemporaryTable extends Save
     @temporaryModel = @createModel()
     @temporaryModel::tableName = @bufferTableName
 
-  execute: ->
-    handler = (transaction) =>
-      @transaction = transaction
-      Promise.bind(@)
-      .then -> @init()
-      .then -> @emit("ready")
-      .then -> @upsert()
-    if @transaction
-      handler(@transaction)
-    else
-      @knex.transaction handler
-
-  init: ->
+  start: ->
     Promise.bind(@)
 #    .then ->
 #      transaction.raw("""
@@ -45,7 +33,7 @@ class TemporaryTable extends Save
     instance.save(null, {transacting: @transaction}).bind(@)
     .then (args...) -> @emit "insert", args...
 
-  upsert: ->
+  finish: ->
       Promise.bind(@)
       .then ->
         @transaction.raw("""
