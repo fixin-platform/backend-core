@@ -23,8 +23,7 @@ class TemporaryTable extends Save
       .then -> @emit("ready")
       .then -> @upsert()
     if @transaction
-      Promise.resolve(@transaction)
-      .then handler
+      handler(@transaction)
     else
       @knex.transaction handler
 
