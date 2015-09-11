@@ -18,10 +18,9 @@ class Download extends ActivityTask
       read.on "object", save.insert.bind(save)
       read.on "total", @progressBarSetTotal.bind(@)
       save.on "insert", @progressBarIncCurrent.bind(@, 1)
-      save.transaction = transaction
       Promise.bind(@)
       .then -> @progressBarIncCurrent(0)
-      .then -> save.start()
+      .then -> save.start(transaction)
       .then -> read.execute()
       .then -> save.finish()
 
