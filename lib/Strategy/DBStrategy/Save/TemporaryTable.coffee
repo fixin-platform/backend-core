@@ -16,6 +16,8 @@ class TemporaryTable extends Save
     @temporaryModel::tableName = @bufferTableName
 
   start: (transaction) ->
+    Match.check transaction, Function
+
     @transaction = transaction
     Promise.bind(@)
 #    .then ->
