@@ -47,7 +47,7 @@ class LimitOffset extends Read
     params = @getPageParams(limit, offset)
     @verbose "LimitOffset:readPageRequest", @details({params: params})
     @getPageRequest(params).bind(@)
-    .spread (response, body) ->
+    .spread (response, body, legs) ->
       @verbose "LimitOffset:readPageResponse", @details({params: params, response: response.toJSON(), body: body})
       Promise.all(@emit("object", object) for object in body)
       .thenReturn([response, body])

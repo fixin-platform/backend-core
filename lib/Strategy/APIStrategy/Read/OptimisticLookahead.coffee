@@ -44,7 +44,7 @@ class OptimisticLookahead extends Read
     @readPage(page) for page in [@chapterEnd..@chapterStart] # reverse order, for faster feedback on whether we should read the next chapter
   readPage: (page) ->
     @getPage(page).bind(@)
-    .spread (response, body) ->
+    .spread (response, body, legs) ->
       Promise.resolve(body).bind(@)
       .map (object) -> @emit "object", object
       .thenReturn([response, body])
