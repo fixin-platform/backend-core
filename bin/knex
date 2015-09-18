@@ -3,4 +3,4 @@
 # Hack to run knex from locally installed node_modules
 
 DIRNAME=$(cd `dirname $0` && pwd)
-NODE_PATH="$NODE_PATH:$DIRNAME/../node_modules" ./swf/core/node_modules/.bin/knex $@
+NODE_PATH="$NODE_PATH:$DIRNAME/../node_modules" $DIRNAME/../node_modules/.bin/knex $@
