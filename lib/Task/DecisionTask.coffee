@@ -92,7 +92,29 @@ class DecisionTask extends Task
       lastHeartbeatDetails: attributes.details
 
   WorkflowExecutionCancelRequested: (event, attributes) ->
-    throw new Error("WorkflowExecutionCancelRequested")
+    throw new errors.RuntimeError(
+      message: "WorkflowExecutionCancelRequested"
+      event: event
+      attributes: attributes
+    )
+
+  FailWorkflowExecutionFailed: (event, attributes) ->
+# The following return accounts for a race condition:
+# * Decider schedules two activity tasks in parallel
+# * SWF starts two activity tasks, delegating them to individual workers
+# * Worker A fails its activity task early during execution
+# * SWF schedules the first decision task
+# * SWF starts the first decision task
+# * Worker B completes its activity task
+# * SWF schedules the second decision task
+# * Decider fails workflow execution (because Worker A failed its activity task)
+# * SWF starts the second decision task (note the small time delta between DecisionTaskScheduled and DecisionTaskStarted; during that time delta Decider fails workflow execution, and SWF adds FailWorkflowExecutionFailed event, so the second decider receives it with the second decision task)
+    return if attributes.cause is "UNHANDLED_DECISION"
+    throw new errors.RuntimeError(
+      message: "FailWorkflowExecutionFailed"
+      event: event
+      attributes: attributes
+    )
 
   # default decisions
   ScheduleActivityTask: (activityShorthand, input) ->
