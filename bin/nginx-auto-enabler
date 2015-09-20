@@ -1,0 +1,29 @@
+#!/bin/bash
+
+CONFS=$(find . -path */nginx/*.conf -not -path "**/test/*")
+if [[ -z "$CONFS" ]]; then
+  echo "nginx/*.conf not found (searched recursively in the current folder)"
+  exit 1
+fi
+
+while getopts ":c" OPT; do
+  case $OPT in
+    c)
+      # c = clean
+      rm /etc/nginx/sites-enabled/*
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      ;;
+  esac
+done
+
+for CONF in $CONFS; do
+  BASENAME=$(basename $CONF)
+  TARGET=/etc/nginx/sites-enabled/$BASENAME
+  if [ ! -f $TARGET ]; then
+    ln --symbolic --relative $CONF $TARGET
+  fi
+done;
+
+nginx -s reload
