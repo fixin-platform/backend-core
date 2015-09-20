@@ -22,7 +22,6 @@ functions.terminateWorkflow = (swf, domain, workflowId) ->
 functions.terminateTestWorkflow = _.partial(functions.terminateWorkflow, _, "Test")
 
 functions.createProcess = (execution, settingsPath, path) ->
-  console.log arguments
   Promise.bind(@)
   .then -> exec execution,
     settings: settingsPath
@@ -30,6 +29,7 @@ functions.createProcess = (execution, settingsPath, path) ->
   , path
   .spread (stdout, stderr, code) ->
     stderr.should.be.equal("")
+    code.should.be.equal(0)
 
 functions.createDecider = functions.createProcess.bind(@, "swf/bin/decider")
 functions.createWorker = functions.createProcess.bind(@, "swf/bin/worker")
