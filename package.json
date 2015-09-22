@@ -29,6 +29,7 @@
     "aws-sdk": "^2.1.39",
     "bluebird": "^2.9.33",
     "bookshelf": "^0.8.1",
+    "bottleneck": "^1.9.1",
     "dargs": "^4.0.1",
     "errors": "^0.3.0",
     "knex": "^0.8.6",

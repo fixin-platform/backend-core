@@ -10,16 +10,15 @@ module.exports = class Binding
       api: String
       scopes: [String]
     _.extend @, options
-    @requestAsync = requestAsync
 
-  request: (options) -> @requestAsync(options)
+  request: (options) -> requestAsync(options)
 
   setCredential: (credential) -> @credential = credential
 
   checkStatusCode: (response, body) ->
     if response.statusCode >= 400
       throw new errors.RuntimeError
-        response: response.toJSON()
+        response: response.toJSON() # important: always call toJSON()
         body: body
     [response, body]
 
