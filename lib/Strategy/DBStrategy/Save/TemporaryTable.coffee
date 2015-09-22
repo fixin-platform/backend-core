@@ -31,10 +31,25 @@ class TemporaryTable extends Save
         """)
 
   insert: (externalObject) ->
-    instance = new @temporaryModel(@serializer.toInternal(externalObject))
-    instance.set("_avatarId", @avatarId)
-    instance.save(null, {transacting: @transaction}).bind(@)
-    .then (args...) -> @emit "insert", args...
+    @checkIfExists externalObject
+    .then (exists) ->
+      if not exists
+        instance = new @temporaryModel(@serializer.toInternal(externalObject))
+        instance.set("_avatarId", @avatarId)
+        instance.save(null, {transacting: @transaction}).bind(@)
+        .then (args...) -> @emit "insert", args...
+      else
+        console.warn "Primary key collision detected!", externalObject
+
+  checkIfExists: (externalObject) ->
+    Promise.bind(@)
+    .then ->
+      @transaction.raw("""
+              SELECT COUNT(*) as "counter" FROM "#{@bufferTableName}"
+              WHERE "#{@idFieldName}" = '#{externalObject[@idFieldName]}' AND "_avatarId" = '#{@avatarId}'
+            """)
+    .then (result) ->
+      result.rows[0].counter isnt '0'
 
   finish: ->
       Promise.bind(@)
