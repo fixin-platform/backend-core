@@ -38,6 +38,7 @@
     "object-path": "^0.9.2",
     "path-parse": "^1.0.5",
     "pg": "^4.4.0",
+    "promise-retry": "^0.2.9",
     "promised-mongo": "^1.2.0",
     "typecast": "0.0.1",
     "underscore": "^1.8.3",
