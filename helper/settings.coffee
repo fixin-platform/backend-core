@@ -13,6 +13,7 @@ module.exports = (file) ->
     "#{splinters.dir}/#{splinters.name}#{splinters.ext}" # file itself
     "#{splinters.dir}/#{splinters.name}.specific#{splinters.ext}"
     "#{splinters.dir}/#{splinters.name}.local#{splinters.ext}"
+    "#{process.env[if process.platform is "win32" then "USERPROFILE" else "HOME"]}/.fixin/settings/#{splinters.name}.private#{splinters.ext}"
     "#{process.env[if process.platform is "win32" then "USERPROFILE" else "HOME"]}/.spirehq/settings/#{splinters.name}.private#{splinters.ext}"
   ]
   for file in files
