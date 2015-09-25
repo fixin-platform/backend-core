@@ -387,7 +387,7 @@ sampleEventMap = [
     "workflowExecutionStartedEventAttributes": {
       "childPolicy": "REQUEST_CANCEL",
       "executionStartToCloseTimeout": "1800000",
-      "input": "{\"Echo\":{\"chunks\":[{\"message\":\"h e l l o\"}]}}",
+      "input": "{\"ListenToYourHeart\":{\"chunks\":[{\"message\":\"h e l l o\"}]}}",
       "parentInitiatedEventId": 0,
       "taskList": {
         "name": "ListenToYourHeart"
@@ -432,9 +432,9 @@ sampleEventMap = [
   },
   {
     "activityTaskScheduledEventAttributes": {
-      "activityId": "Echo",
+      "activityId": "ListenToYourHeart",
       "activityType": {
-        "name": "Echo",
+        "name": "ListenToYourHeart",
         "version": "1.0.0"
       },
       "decisionTaskCompletedEventId": 4,
@@ -444,7 +444,7 @@ sampleEventMap = [
       "scheduleToStartTimeout": "1800000",
       "startToCloseTimeout": "600000",
       "taskList": {
-        "name": "Echo"
+        "name": "ListenToYourHeart"
       },
       "taskPriority": "0"
     },
@@ -454,7 +454,7 @@ sampleEventMap = [
   },
   {
     "activityTaskStartedEventAttributes": {
-      "identity": "Echo-test-worker",
+      "identity": "ListenToYourHeart-test-worker",
       "scheduledEventId": 5
     },
     "eventId": 6,
