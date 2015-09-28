@@ -27,7 +27,6 @@ class APIStrategy extends Strategy
         selector: selector
       ) unless credential
       @binding.setCredential(credential)
-      @binding
 
   createBinding: -> throw new Error("Implement me!")
 
