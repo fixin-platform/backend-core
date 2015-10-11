@@ -23,6 +23,7 @@ class ActivityTask extends Task
     @redis = dependencies.redis
     Match.check @mongodb, Match.Any
 
+  progressBarSetMessage: (message) -> Promise.resolve(@mongodb.collection("Commands").update({_id: @commandId, "progressBars.activityId": @activityId}, {$set: {"progressBars.$.message": message}})).thenReturn(true)
   progressBarSetTotal: (total) -> Promise.resolve(@mongodb.collection("Commands").update({_id: @commandId, "progressBars.activityId": @activityId}, {$set: {"progressBars.$.total": total}})).thenReturn(total)
   progressBarIncCurrent: (inc) -> Promise.resolve(@mongodb.collection("Commands").update({_id: @commandId, "progressBars.activityId": @activityId}, {$inc: {"progressBars.$.current": inc}})).thenReturn(inc)
   # NOTE: progressBarIncCurrent shouldn't be called for each object, because it will result in a flood of DB writes; instead, progressBarIncCurrent should be called in batches (e.g. for each page)

@@ -15,8 +15,8 @@ class APIStrategy extends Strategy
     Match.check @mongodb, Match.Any
     Match.check @redis, Match.Any
 
-    @binding = @createBinding()
     super
+    @binding ?= @createBinding()
 
   acquireCredential: ->
     selector =
