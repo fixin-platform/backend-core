@@ -4,6 +4,7 @@ Match = require "mtr-match"
 createKnex = require "./knex"
 createBookshelf = require "./bookshelf"
 createMongoDB = require "./mongodb"
+createRedis = require "./redis"
 createSWF = require "./swf"
 createLogger = require "./logger"
 
@@ -21,4 +22,5 @@ module.exports = (settings, handle) ->
     mongodb: get: _.memoize -> createMongoDB dependencies.settings.mongodb
     swf: get: _.memoize -> createSWF dependencies.settings.swf
     logger: get: _.memoize -> createLogger dependencies.settings.logger
+    redis: get: _.memoize -> createRedis dependencies.settings.redis
   dependencies
