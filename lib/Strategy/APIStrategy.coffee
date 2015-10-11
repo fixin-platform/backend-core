@@ -9,9 +9,13 @@ class APIStrategy extends Strategy
   constructor: (input, dependencies) ->
     Match.check input, Match.ObjectIncluding
       avatarId: String
-    @binding = @createBinding()
+
     @mongodb = dependencies.mongodb
+    @redis = dependencies.redis
     Match.check @mongodb, Match.Any
+    Match.check @redis, Match.Any
+
+    @binding = @createBinding()
     super
 
   acquireCredential: ->

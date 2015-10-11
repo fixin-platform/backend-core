@@ -20,6 +20,7 @@ class ActivityTask extends Task
     _.extend @, input
     @input = input
     @mongodb = dependencies.mongodb
+    @redis = dependencies.redis
     Match.check @mongodb, Match.Any
 
   progressBarSetTotal: (total) -> Promise.resolve(@mongodb.collection("Commands").update({_id: @commandId, "progressBars.activityId": @activityId}, {$set: {"progressBars.$.total": total}})).thenReturn(total)
