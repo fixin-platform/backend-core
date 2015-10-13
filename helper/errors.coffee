@@ -36,4 +36,10 @@ errors.create
   defaultExplanation: "The rate limit for prodived credentials was reached"
   defaultResponse: "Try again later - OR - Ask the API developer to increase the limit"
 
+errors.create
+  name: "NullBodyData"
+  defaultMessage: "The response is empty"
+  defaultExplanation: "In rare cases the response has no data and it seems like a bug"
+  defaultResponse: "Try again"
+
 module.exports = errors
