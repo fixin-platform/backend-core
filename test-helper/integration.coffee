@@ -4,13 +4,13 @@ exec = require "../../core/test-helper/exec"
 
 functions = {}
 
-functions.createTestWorkflow = (swf, workflowId, name, input) ->
+functions.createTestWorkflow = (swf, workflowId, name, input, version) ->
   swf.startWorkflowExecutionAsync(
     domain: "Test"
     workflowId: workflowId
     workflowType:
       name: name
-      version: "1.0.0"
+      version: version or "1.0.0"
     input: JSON.stringify input
   )
 
