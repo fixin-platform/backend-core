@@ -8,7 +8,7 @@ class CollisionCheckTemporaryTable extends TemporaryTable
     @checkIfExists externalObject
     .then (exists) ->
       if not exists
-        super
+        super(externalObject)
       else
         console.warn "Primary key collision detected!", externalObject
 
