@@ -11,11 +11,9 @@ class Upsert extends Save
         instance = object or new @model()
         instance.set("_avatarId", @avatarId)
         instance.save(@serializer.toInternal(externalObject), {transacting: t})
-        .then (args...) -> @emit "insert", args...
+    .then (args...) => @emit "insert", args...
 
   findObject: (transaction, externalObject) ->
-    Promise.bind(@)
-    .then ->
-      new @model({_uid: externalObject._uid, _avatarId: @avatarId}).fetch({transacting: transaction})
+    new @model({_uid: externalObject._uid, _avatarId: @avatarId}).fetch({transacting: transaction})
 
 module.exports = Upsert
