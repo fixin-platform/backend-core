@@ -4,7 +4,7 @@ Match = require "mtr-match"
 Save = require "../Save"
 
 class TemporaryTable extends Save
-  constructor: (input, options, dependencies) ->
+  constructor: (input, dependencies) ->
     _.defaults input,
       bufferTableName: "UpsertData"
       idFieldName: "_uid"
